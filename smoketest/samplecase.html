@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+<head>
+<title>Ralph's Oath</title>
+<script type="text/javascript">
+function wrech_it() {
+    while (true) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/ralph", false);
+        xhr.send();
+        if (xhr.responseText == "EOF") {
+            break;
+        }
+        document.body.innerHTML += xhr.responseText;
+    }
+}
+</script>
+</head>
+<body onload="wrech_it()"></body></html>
