@@ -12,7 +12,9 @@
 
 (defn- ralph-oath []
     (let [server (st/start-jetty (st/handle-static-files 
-                {"/samplecase" "@/smoketest/samplecase.html"}
+                {"/samplecase.html" "@/resources/samplecase.html"
+                    "/samplecase.js" "@/resources/samplecase.js"
+                }
             )
             (st/handle-transitions
                 (st/handle-get "/ralph" "text/html" "<h1>Ralph's Oath</h1>")
