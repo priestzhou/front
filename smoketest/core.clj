@@ -4,14 +4,11 @@
         [clojure.java.io :as io]
         [utilities.shutil :as sh]
     )
-    (:use
-        [ring.adapter.jetty :only (run-jetty)]
-    )
 )
 
 (def ^:private result (atom nil))
 
-(defn- post-result [req]
+(defn post-result [req]
     (when (and
             (= (:uri req) "/st-result")
             (= (:request-method req) :post)
@@ -24,31 +21,6 @@
             (reset! result)
         )
         {:status 202 :headers {"Access-Control-Allow-Origin" "*"}}
-    )
-)
-
-(defn- handle-request' [handlers req]
-    (when-not (empty? handlers)
-        (let [[h & hs] handlers
-                res (h req)
-            ]
-            (if res
-                res
-                (recur hs req)
-            )
-        )
-    )
-)
-
-(defn handle-request [handlers req]
-    (let [
-            handlers (conj handlers post-result)
-            res (handle-request' handlers req)
-        ]
-        (if res
-            res
-            {:status 404}
-        )
     )
 )
 
@@ -111,25 +83,6 @@
     )
 )
 
-(defn- get-handler [path content-type result req]
-    (when (and
-            (= (:uri req) path)
-            (= (:request-method req) :get)
-        )
-        {:status 200 
-            :headers {
-                "Access-Control-Allow-Origin" "*"
-                "content-type" content-type
-            }
-            :body result
-        }
-    )
-)
-
-(defn handle-get [path content-type result]
-    (partial get-handler path content-type result)
-)
-
 (defn wait-for-result [server]
     (if-not @result
         (do
@@ -144,13 +97,3 @@
     )
 )
 
-(defn start-jetty [& handlers]
-    (let [server (run-jetty 
-                (partial handle-request handlers) 
-                {:port 11111 :join? false}
-            )
-        ]
-        (Thread/sleep 1000)
-        server
-    )
-)
