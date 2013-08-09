@@ -10,7 +10,7 @@ stmainjs = env.install(env.compileJs('front_st_samplecase.js', 'smoketest',
 ))
 
 st_samplecase_js = env.compileJs('samplecase.js', 'sample_st_case',
-    options={":optimizations": ":simple", ":pretty-print": True}
+    options={":optimizations": ":advanced"}
 )
 
 stjar = env.install(env.compileAndJar('front_smoketest.jar', 'smoketest',
