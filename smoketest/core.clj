@@ -7,11 +7,6 @@
     (:use
         [ring.adapter.jetty :only (run-jetty)]
     )
-    (:import
-        [java.io File FileInputStream InputStream]
-        [java.nio.file Path]
-    )
-    (:gen-class)
 )
 
 (def ^:private result (atom nil))
@@ -79,27 +74,6 @@
     transitable-handler
 )
 
-(defn open-file-in-classpath ^InputStream [p]
-    (-> (.getClass System)
-        (.getResourceAsStream p)
-    )
-)
-
-(defn open-file-in-fs ^InputStream [p]
-    (-> p
-        (sh/getPath)
-        (.toFile)
-        (FileInputStream.)
-    )
-)
-
-(defn open-file ^InputStream [p]
-    (if (and (instance? String p) (= (first p) \@))
-        (open-file-in-classpath (.substring p 1))
-        (open-file-in-fs p)
-    )
-)
-
 (defn- static-files-handler [files req]
     (when (= (:request-method req) :get)
         (let [p (:uri req)
@@ -108,7 +82,7 @@
             (when f
                 {:status 200
                     :headers {"content-type" type}
-                    :body (open-file f)
+                    :body (sh/open-file f)
                 }
             )
         )
