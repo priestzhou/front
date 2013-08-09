@@ -2,12 +2,14 @@
     (:require
         [clojure.data.json :as json]
         [clojure.java.io :as io]
+        [utilities.shutil :as sh]
     )
     (:use
         [ring.adapter.jetty :only (run-jetty)]
     )
     (:import
-        java.io.File
+        [java.io File FileInputStream InputStream]
+        [java.nio.file Path]
     )
     (:gen-class)
 )
@@ -77,6 +79,27 @@
     transitable-handler
 )
 
+(defn open-file-in-classpath ^InputStream [p]
+    (-> (.getClass System)
+        (.getResourceAsStream p)
+    )
+)
+
+(defn open-file-in-fs ^InputStream [p]
+    (-> p
+        (sh/getPath)
+        (.toFile)
+        (FileInputStream.)
+    )
+)
+
+(defn open-file ^InputStream [p]
+    (if (and (instance? String p) (= (first p) \@))
+        (open-file-in-classpath (.substring p 1))
+        (open-file-in-fs p)
+    )
+)
+
 (defn- static-files-handler [files req]
     (when (= (:request-method req) :get)
         (let [p (:uri req)
@@ -85,7 +108,7 @@
             (when f
                 {:status 200
                     :headers {"content-type" type}
-                    :body (File. f)
+                    :body (open-file f)
                 }
             )
         )
