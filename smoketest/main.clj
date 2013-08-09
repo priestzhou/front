@@ -13,12 +13,12 @@
 
 (defn- ralph-oath []
     (let [server (web/start-jetty {:port 11111 :join? false} 
-            (st/handle-static-files 
+            (web/handle-static-files 
                 {"/samplecase.html" "@/resources/samplecase.html"
                     "/samplecase.js" "@/resources/samplecase.js"
                 }
             )
-            (st/handle-transitions
+            (web/handle-transitions
                 (web/handle-get "/ralph" "text/html" "<h1>Ralph's Oath</h1>")
                 (web/handle-get "/ralph" "text/html" "<p>I'm bad,</p>")
                 (web/handle-get "/ralph" "text/html" "<p>and that's good.</p>")
