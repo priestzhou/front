@@ -64,7 +64,7 @@
     )
 )
 
-(defn reformat-log-table [data]
+(defn extract-table-data [data]
     (when-not (empty? data)
         (let [ks (vec (for [[k] (get data 0)] k))]
             [
@@ -157,20 +157,18 @@
     )
 )
 
-(defn ^:export show-log-list 
+(defn show-log-list 
     ([data page page-size]
-        (let [data (to-cljs-coll data)]
-            (when-not (empty? data)
-                (let [[ks data] (reformat-log-table data)]
-                    (update-log-list ks data page page-size)
-                    (show-pager ks data page page-size)
-                )
+        (when-not (empty? data)
+            (let [[ks data] (extract-table-data data)]
+                (update-log-list ks data page page-size)
+                (show-pager ks data page page-size)
             )
         )
     )
 
-    ([data page]
-        (show-log-list data page 10)
+    ([data]
+        (show-log-list data 0 10)
     )
 )
 
@@ -184,21 +182,27 @@
 )
 
 (defn reformat-group-table [data]
-    (reformat-log-table
+    (extract-table-data
         (flatten-gkeys data)
     )
 )
 
-(defn ^:export show-group-table [data]
-    (let [data (to-cljs-coll data)]
-        (when-not (empty? data)
-            (let [[topics data] (reformat-group-table data)]
-                (-> (dom/by-id "divContentTable")
-                    (xpath "div")
-                    (xpath "table")
-                    (dom/set-html! (format-table topics data))
-                )
+(defn show-group-table [data]
+    (when-not (empty? data)
+        (let [[topics data] (reformat-group-table data)]
+            (-> (dom/by-id "divContentTable")
+                (xpath "div")
+                (xpath "table")
+                (dom/set-html! (format-table topics data))
             )
         )
+    )
+)
+
+(defn ^:export refresh [data]
+    (let [data (to-cljs-coll data)]
+        (draw-column-chart)
+        (show-log-list (get data "logtable"))
+        (show-group-table (get data "grouptable"))
     )
 )
