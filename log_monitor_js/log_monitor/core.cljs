@@ -249,7 +249,7 @@
 )
 
 (defn get-keywords []
-    (-> (dom/by-class "SearchBar_0_0_0_id")
+    (-> (dom/by-id "SearchBar_0_0_0_id")
         (dom/value)
     )
 )
