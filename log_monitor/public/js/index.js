@@ -29,14 +29,14 @@
 			$('#TimeRangePicker_0_1_0 span.timeRangeActivator').text($(this).text());
 			//alert($(this).attr('latest_time') + '||' + $(this).attr('earliest_time'));
 			$('input[name=earliest_time]').val($(this).attr('earliest_time'));
-			requestData();
+            log_monitor.core.request_search();
 			return true;
 		});
 		//查询按钮
 		$('input.searchButton').click(function(){
 			//$('div.graphArea').mask('Loading...')
 			//alert($('#SearchBar_0_0_0_id').val());
-			requestData();
+            log_monitor.core.request_search();
 			return true;
 		});
 
@@ -94,38 +94,6 @@
 			//config.plotOptions.column.pointWidth = 15;
 			$("#divContentChart").highcharts(config);
 		};
-
-		var intervalid = {};
-
-		var requestData = function() {
-			clearInterval(intervalid);
-			var time = $('input[name=earliest_time]').val();
-			if(time == 60) {
-				var sec = 5;
-			} else {
-				var sec = 10
-			}
-			var keywords = $('#SearchBar_0_0_0_id').val();
-			var time = $('input[name=earliest_time]').val();
-			var url = '/query/create';
-			var postData = 'querystring=' + keywords + '&timewindow=' + time;
-			$('.graphArea .events').removeClass('eventsNumOk').addClass('eventsNumLoading');
-			$.ajax({
-				type: "POST",
-				url: url,	
-				data: postData,
-				dataType: "json",
-				success: function(data, status) {
-					if(data["query-id"]) {
-                        log_monitor.core.periodically_update(data["query-id"]);
-						intervalid = setInterval(function(){ajaxQequest(data["query-id"])}, sec*1000);
-					}
-				},
-				error:function(msg) {
-					$('.graphArea .events').removeClass('eventsNumLoading').addClass('eventsNumOk');
-				}
-			});
-		}
 
 		buttonSwitcher()
         log_monitor.core.refresh();

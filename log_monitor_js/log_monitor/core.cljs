@@ -200,15 +200,26 @@
     )
 )
 
+(defn show-ready []
+    (-> (dom/by-class "events")
+        (dom/remove-class! "eventsNumLoading")
+        (dom/add-class! "eventsNumOk")
+    )
+)
+
+(defn show-busy []
+    (-> (dom/by-class "events")
+        (dom/remove-class! "eventsNumOk")
+        (dom/add-class! "eventsNumLoading")
+    )
+)
+
 (defn ^:export refresh 
     ([data]
         (draw-column-chart)
         (show-log-list (get data "logtable"))
         (show-group-table (get data "grouptable"))
-        (-> (dom/by-class "events")
-            (dom/remove-class! "eventsNumLoading")
-            (dom/add-class! "eventsNumOk")
-        )
+        (show-ready)
     )
 
     ([] (refresh {"grouptable" [] "logtable" []}))
@@ -218,14 +229,60 @@
     (refresh response)
 )
 
-(defn fetch-log-update-error [{:keys [status status-text]}]
+(defn on-error [{:keys [status status-text]}]
     (dom/log (format "fetch updates error: %d %s " status status-text))
 )
 
-(defn ^:export periodically-update [id]
+(defn periodically-update [id]
     (ajax/GET (str "/query/get?query-id=" id) {
         :handler fetch-log-update-succeed
-        :error-handler fetch-log-update-error
+        :error-handler on-error
     })
 )
 
+(def arranged-update (atom nil))
+
+(defn get-time-range []
+    (-> (dom/by-id "time_range_picker")
+        (dom/value)
+    )
+)
+
+(defn get-keywords []
+    (-> (dom/by-class "SearchBar_0_0_0_id")
+        (dom/value)
+    )
+)
+
+(defn ^:export request-search []
+    (swap! arranged-update (fn [itv]
+        (when itv
+            (js/clearInterval itv)
+            nil
+        )
+    ))
+    (show-busy)
+    (let [time-range (get-time-range)
+        keywords (get-keywords)
+        interval (if (= time-range 60) 5000 10000)
+        ]
+        (ajax/POST 
+            (ajax/uri-with-params "/query/create" {
+                "querystring" keywords 
+                "timewindow" time-range
+            }) {
+            :handler (fn [response]
+                (when-let [qid (get response "query-id")]
+                    (periodically-update qid)
+                    (reset! arranged-update
+                        (js/setInterval
+                            (partial periodically-update qid)
+                            interval
+                        )
+                    )
+                )
+            )
+            :error-handler on-error
+        })
+    )
+)
