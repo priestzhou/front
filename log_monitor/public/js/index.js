@@ -83,7 +83,8 @@
 			});
 		}
 		function pageSelectCallback(page_id) {
-			intList(oResponseData['logtable'], page_id, 10);
+			// intList(oResponseData['logtable'], page_id, 10);
+            log_monitor.core.show_list(oResponseData['logtable'], page_id);
 			return false;
 		}
 		
@@ -248,7 +249,8 @@
 				success: function(oData, status) {
 					oResponseData = oData;
 					log_monitor.core.draw_column_chart();
-					intList(oResponseData['logtable']);
+					// intList(oResponseData['logtable']);
+                    log_monitor.core.show_list(oResponseData['logtable'], 0);
 					initPage(oResponseData['logtable'].length);
 					intTable(oResponseData['grouptable']);
 					$('.graphArea .events').removeClass('eventsNumLoading').addClass('eventsNumOk');
@@ -261,7 +263,8 @@
 		}
 		log_monitor.core.draw_column_chart();
 		buttonSwitcher()
-		intList(oResponseData['logtable']);
+		// intList(oResponseData['logtable']);
+        log_monitor.core.show_list(oResponseData['logtable'], 0);
 		initPage(oResponseData['logtable'].length);
 		intTable(oResponseData['grouptable']);
 		//requestChart();
