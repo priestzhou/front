@@ -86,35 +86,6 @@
 			intList(oResponseData['logtable'], page_id, 10);
 			return false;
 		}
-		var requestColumnChart = function() {
-			var data = {'test1':10,'test2':12,'test3':15,'test4':5,'test5':12,'test6':12,'test7':2,'test7':9};
-			var config = ChartConfig.getConfig('column');
-			var dataTmp = [],dataValue;
-			var categories = new Array;
-			for (var x in data) {
-				dataValue = Number(data[x]);
-				dataValue = dataValue == 0 ? 1 : dataValue;
-				dataTmp.push([x, dataValue]);
-				categories.push(x);
-			}
-			var finData = [];
-			finData.push({name:'test',data:dataTmp});
-			config.legend = false;
-			config.title.text = '';
-			config.series = finData;
-			config.xAxis.categories = categories;
-			//config.xAxis.min = 1;
-			config.xAxis.title.text = '';
-			//config.xAxis.type = 'logarithmic';
-			config.yAxis.min = 1;
-			config.yAxis.title.text = '';
-			config.tooltip.headerFormat = '';
-			config.tooltip.formatter = function() {
-				return (this.point.category) + '总数' + this.point.y+'次';
-			};
-			config.plotOptions.column.pointWidth = 15;
-			$("#VisualChartDiv").highcharts(config);
-		};
 		
 		var requestChart = function() {
 			var data = {
@@ -276,7 +247,7 @@
 				dataType: "json",
 				success: function(oData, status) {
 					oResponseData = oData;
-					requestColumnChart();
+					log_monitor.core.draw_column_chart();
 					intList(oResponseData['logtable']);
 					initPage(oResponseData['logtable'].length);
 					intTable(oResponseData['grouptable']);
@@ -288,7 +259,7 @@
 				}
 			});
 		}
-		requestColumnChart();
+		log_monitor.core.draw_column_chart();
 		buttonSwitcher()
 		intList(oResponseData['logtable']);
 		initPage(oResponseData['logtable'].length);

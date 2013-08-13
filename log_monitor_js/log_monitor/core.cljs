@@ -23,16 +23,7 @@
         :subtitle { 
             :text "" 
         }
-        :legend {
-            :layout "vertical"
-            :align "left"
-            :verticalAlign "top"
-            :x 100
-            :y 0
-            :floating true
-            :borderWidth 1
-            :backgroundColor "#FFFFFF"
-        }
+        :legend false
         :xAxis { 
             :categories []
             :title {
@@ -59,7 +50,7 @@
     }
 )
 
-(defn ^:export requestColumnChart []
+(defn ^:export draw-column-chart []
     (let [
         config (merge default-config {
                 :series [{:name "test" :data [1 2 3 4 5 6]}]
