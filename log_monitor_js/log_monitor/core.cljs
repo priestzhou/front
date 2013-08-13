@@ -2,6 +2,7 @@
     (:require
         [clojure.string :as str]
         [domina :as dom]
+        [ajax.core :as ajax]
     )
     (:use
         [domina.xpath :only (xpath)]
@@ -199,10 +200,32 @@
     )
 )
 
-(defn ^:export refresh [data]
-    (let [data (to-cljs-coll data)]
+(defn ^:export refresh 
+    ([data]
         (draw-column-chart)
         (show-log-list (get data "logtable"))
         (show-group-table (get data "grouptable"))
+        (-> (dom/by-class "events")
+            (dom/remove-class! "eventsNumLoading")
+            (dom/add-class! "eventsNumOk")
+        )
     )
+
+    ([] (refresh {"grouptable" [] "logtable" []}))
 )
+
+(defn fetch-log-update-succeed [response]
+    (refresh response)
+)
+
+(defn fetch-log-update-error [{:keys [status status-text]}]
+    (dom/log (format "fetch updates error: %d %s " status status-text))
+)
+
+(defn ^:export periodically-update [id]
+    (ajax/GET (str "/query/get?query-id=" id) {
+        :handler fetch-log-update-succeed
+        :error-handler fetch-log-update-error
+    })
+)
+

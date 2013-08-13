@@ -117,34 +117,17 @@
 				dataType: "json",
 				success: function(data, status) {
 					if(data["query-id"]) {
-						ajaxQequest(data["query-id"]);
+                        log_monitor.core.periodically_update(data["query-id"]);
 						intervalid = setInterval(function(){ajaxQequest(data["query-id"])}, sec*1000);
 					}
 				},
 				error:function(msg) {
-					//alert("Ajax error status: "+msg.status);
 					$('.graphArea .events').removeClass('eventsNumLoading').addClass('eventsNumOk');
 				}
 			});
 		}
 
-		var ajaxQequest = function(id) {
-			$.ajax({
-				type: "GET",
-				url: '/query/get?query-id='+id,	
-				data: '',
-				dataType: "json",
-				success: function(oData, status) {
-                    log_monitor.core.refresh(oData);
-					$('.graphArea .events').removeClass('eventsNumLoading').addClass('eventsNumOk');
-				},
-				error:function(msg) {
-					//alert("Ajax error status: "+msg.status);
-					$('.graphArea .events').removeClass('eventsNumLoading').addClass('eventsNumOk');
-				}
-			});
-		}
 		buttonSwitcher()
-        log_monitor.core.refresh({"grouptable": [], "logtable":[]});
+        log_monitor.core.refresh();
  });
 })(jQuery);
