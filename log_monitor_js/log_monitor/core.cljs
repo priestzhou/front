@@ -10,58 +10,146 @@
     )
 )
 
-(def default-config {
-        :chart {
-            :type "column"
-            :height 100
-        }
-        :credits {
-            :enabled false
-        }
-        :title { 
+(def default-config-column {
+    :chart {
+        :type "column"
+        :height 100
+    }
+    :credits {
+        :enabled false
+    }
+    :title { 
+        :text ""
+    }
+    :subtitle { 
+        :text "" 
+    }
+    :legend false
+    :xAxis { 
+        :categories []
+        :title {
             :text ""
         }
-        :subtitle { 
-            :text "" 
+    }
+    :yAxis {
+        :min 0
+        :title {
+            :text ""
         }
-        :legend false
-        :xAxis { 
-            :categories []
-            :title {
-                :text ""
+    }
+    :tooltip {
+        :pointFormat "{point.y:,.0f}"
+        :headerFormat ""
+    }
+    :plotOptions {
+        :column {
+            :pointWidth 15
+            :pointPadding 0.2
+        }
+    }
+    :series []
+})
+
+(def default-config-area {
+    :chart {
+        :type "area"
+        :zoomType "x"
+    }
+    :credits {
+        :enabled false
+    }
+    :title {:text ""}
+    :subtitle {:text ""}
+    :legend {
+        :layout "vertical"
+        :align "left"
+        :verticalAlign "top"
+        :x 100
+        :y 0
+        :floating true
+        :borderWidth 1
+        :backgroundColor "#FFFFFF"
+    }
+    :xAxis {
+        :title {:text ""}
+    }
+    :yAxis { 
+        :min 1
+        :title {
+            :text ""
+        }
+    }
+    :plotOptions {
+        :area {
+            :fillColor {
+                :linearGradient {:x1 0 :y1 0 :x2 0 :y2 1}
+                :stops []
+            }
+            :lineWidth 1
+            :marker {
+                :enabled false
+            }
+            :shadow false
+            :states {
+                :hover {
+                    :lineWidth 1
+                }
             }
         }
-        :yAxis {
-            :min 0
-            :title {
-                :text ""
+    }
+    :tooltip {
+        :pointFormat "{point.y:,.0f}"
+    }
+    :series []
+})
+
+(defn ^:export draw-column-chart []
+    (let [config (merge default-config-column {
+            :series [{:name "test" :data [1 2 3 4 5 6]}]
+            :xAxis {
+                :categories ["A" "B" "C" "D" "E" "F"]
+                :title {:text ""}
             }
-        }
-        :tooltip {
-            :pointFormat "{point.y:,.0f}"
-            :headerFormat ""
-        }
-        :plotOptions {
-            :column {
-                :pointWidth 15
-                :pointPadding 0.2
-            }
-        }
-        :series []
+        })
+        ]
+        (.highcharts (js/jQuery "#VisualChartDiv") (to-js-obj config))
+    )
+)
+
+(defn calc-series [data]
+    {:series
+        (vec (for [[ser dict] data]
+            {:name ser :data (vec (for [[_ v] dict] v))}
+        ))
     }
 )
 
-(defn ^:export draw-column-chart []
-    (let [
-        config (merge default-config {
-                :series [{:name "test" :data [1 2 3 4 5 6]}]
-                :xAxis {
-                    :categories ["A" "B" "C" "D" "E" "F"]
-                    :title {:text ""}
+(defn calc-xaxis [data]
+    (vec (sort
+        (let [[_ snd] (first data)]
+            (for [[k] snd] k)
+        )
+    ))
+)
+
+(defn ^:export draw-request-chart []
+    (let [data {
+            "data1" {"test1" 10 "test3" 15 "test2" 12 "test5" 12 "test4" 5 "test7" 2 "test6" 12 "test8" 9} 
+            "data3" {"test1" 2 "test3" 6 "test2" 15 "test5" 23 "test4" 9 "test7" 17 "test6" 5 "test8" 7} 
+            "data2" {"test1" 5 "test3" 10 "test2" 11 "test5" 13 "test4" 11 "test7" 21 "test6" 10 "test8" 19}
+        }
+        config (merge default-config-area
+            (calc-series data)
+            {
+                :xAxis {:categories (calc-xaxis data)}
+                :tooltip {
+                    :headerFormat ""
+                    :formatter js/request_chart_tooltip
                 }
-            })
+            }
+        )
         ]
-        (.highcharts (js/jQuery "#VisualChartDiv") (to-js-obj config))
+        (.highcharts (js/jQuery "#divContentChart") (to-js-obj config))
     )
 )
 

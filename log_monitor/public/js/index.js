@@ -57,7 +57,8 @@
 				$('#divContentTable').show();
 			} else {
 				$('#divContentChart').show();
-				requestChart();
+				// requestChart();
+                log_monitor.core.draw_request_chart();
 			}
 		}
 
@@ -99,3 +100,7 @@
         log_monitor.core.refresh();
  });
 })(jQuery);
+
+var request_chart_tooltip = function() {
+    return this.point.category + " 总计" + this.point.y + "次"
+}
