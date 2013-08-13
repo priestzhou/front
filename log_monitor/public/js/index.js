@@ -99,51 +99,6 @@
 			$("#divContentChart").highcharts(config);
 		};
 
-		var intTable = function (grouptable) {
-			/*
-			grouptable = [
-				{":time":"2013-07-18 10:00:00",":gkey":{"cmd":"add","user":"admin"},"count1":"11","sum1":"400"},
-				{":time":"2013-07-18 10:00:05",":gkey":{"cmd":"add","user":"admin"},"count1":"11","sum1":"400"},
-				{":time":"2013-07-18 10:00:10",":gkey":{"cmd":"add","user":"admin"},"count1":"11","sum1":"400"}
-			];
-			*/
-			var aHead = new Array();
-			if(grouptable.length>0) {
-				for(key in grouptable[0]) {
-					if(key == 'gKeys') {
-						for(group in grouptable[0]['gKeys']) {
-							aHead.push(group);
-						}
-					} else {
-						aHead.push(key);
-					}
-				}
-			}
-			var tags = new Array();
-			tags.push("<thead><tr>");
-			for (var i in aHead) {
-				tags.push("<th align='left'>" + aHead[i] + "</th>");
-			}
-			tags.push("</tr></thead>");
-			tags.push("<tbody>");
-
-			for (var i = 0; i<grouptable.length; i++) {
-				var row = grouptable[i];
-				tags.push("<tr>");
-				for(x in row) {
-					if(x == 'gKeys') {
-						for(group in  row[x]) {
-							tags.push("<td>" + row[x][group] + "</td>");
-						}
-					} else {
-						tags.push("<td>" + row[x] + "</td>");
-					}
-				}
-				tags.push("</tr>");
-			}
-			tags.push("</tbody>");
-			$('#divContentTable table').html(tags.join(''));
-		}
 		var intervalid = {};
 		/**
 		var oResponseData = {
@@ -200,7 +155,7 @@
 					oResponseData = oData;
 					log_monitor.core.draw_column_chart();
                     log_monitor.core.show_log_list(oResponseData['logtable'], 0);
-					intTable(oResponseData['grouptable']);
+                    log_monitor.core.show_group_table(oResponseData['grouptable']);
 					$('.graphArea .events').removeClass('eventsNumLoading').addClass('eventsNumOk');
 				},
 				error:function(msg) {
@@ -209,10 +164,10 @@
 				}
 			});
 		}
-		log_monitor.core.draw_column_chart();
 		buttonSwitcher()
+        log_monitor.core.draw_column_chart();
         log_monitor.core.show_log_list(oResponseData['logtable'], 0);
-		intTable(oResponseData['grouptable']);
+        log_monitor.core.show_group_table(oResponseData['grouptable']);
 		//requestChart();
 
  });

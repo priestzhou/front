@@ -64,7 +64,7 @@
     )
 )
 
-(defn reformat [data]
+(defn reformat-log-table [data]
     (when-not (empty? data)
         (let [ks (vec (for [[k] (get data 0)] k))]
             [
@@ -83,7 +83,7 @@
     )
 )
 
-(defn format-logtable-header [topics]
+(defn format-header [topics]
     [
         "<thead>"
         "<tr>"
@@ -115,20 +115,25 @@
     )
 )
 
-(defn format-log-table [topics data page page-size]
-    (str/join "" (flatten
-        (concat
-            (format-logtable-header topics)
-            (format-cell data page page-size)
-        )
-    ))
+(defn format-table 
+    ([topics data page page-size]
+        (str/join "" (flatten
+            (concat
+                (format-header topics)
+                (format-cell data page page-size)
+            )
+        ))
+    )
+    ([topics data]
+        (format-table topics data 0 (count data))
+    )
 )
 
 (defn update-log-list [ks data page page-size]
     (-> (dom/by-id "divContentList")
         (xpath "div")
         (xpath "table")
-        (dom/set-html! (format-log-table ks data page page-size))
+        (dom/set-html! (format-table ks data page page-size))
     )
 )
 
@@ -156,7 +161,7 @@
     ([data page page-size]
         (let [data (to-cljs-coll data)]
             (when-not (empty? data)
-                (let [[ks data] (reformat data)]
+                (let [[ks data] (reformat-log-table data)]
                     (update-log-list ks data page page-size)
                     (show-pager ks data page page-size)
                 )
@@ -169,3 +174,31 @@
     )
 )
 
+(defn flatten-gkeys [data]
+    (vec (for [row data]
+        (merge 
+            (dissoc row "gKeys")
+            (get row "gKeys")
+        )
+    ))
+)
+
+(defn reformat-group-table [data]
+    (reformat-log-table
+        (flatten-gkeys data)
+    )
+)
+
+(defn ^:export show-group-table [data]
+    (let [data (to-cljs-coll data)]
+        (when-not (empty? data)
+            (let [[topics data] (reformat-group-table data)]
+                (-> (dom/by-id "divContentTable")
+                    (xpath "div")
+                    (xpath "table")
+                    (dom/set-html! (format-table topics data))
+                )
+            )
+        )
+    )
+)
