@@ -70,15 +70,11 @@
         (let [ks (vec (for [[k] (get data 0)] k))]
             [
                 ks
-                (vec
-                    (for [row data]
-                        (vec
-                            (for [k ks]
-                                (get row k)
-                            )
-                        )
-                    )
-                )
+                (vec (for [row data]
+                    (vec (for [k ks]
+                        (get row k)
+                    ))
+                ))
             ]
         )
     )
