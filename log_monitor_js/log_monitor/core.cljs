@@ -124,16 +124,41 @@
     ))
 )
 
+(defn update-log-list [ks data page page-size]
+    (-> (dom/by-id "divContentList")
+        (xpath "div")
+        (xpath "table")
+        (dom/set-html! (format-log-table ks data page page-size))
+    )
+)
+
+(defn ^:export show-pager [ks data page page-size]
+    (-> (js/jQuery "#pagination")
+        (.pagination (count data)
+            (to-js-obj {
+                :callback (fn [page]
+                    (update-log-list ks data page page-size)
+                )
+                :prev_text "上一页"
+                :next_text "下一页"
+                :link_to "javascript:void(0)"
+                :items_per_page page-size
+                :num_edge_entries 1
+                :num_display_entries 3
+                :current_page page
+                :noPreNextCurrentCss true
+            })
+        )
+    )
+)
+
 (defn ^:export show-log-list 
     ([data page page-size]
         (let [data (to-cljs-coll data)]
             (when-not (empty? data)
                 (let [[ks data] (reformat data)]
-                    (-> (dom/by-id "divContentList")
-                        (xpath "div")
-                        (xpath "table")
-                        (dom/set-html! (format-log-table ks data page page-size))
-                    )
+                    (update-log-list ks data page page-size)
+                    (show-pager ks data page page-size)
                 )
             )
         )

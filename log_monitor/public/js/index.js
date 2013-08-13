@@ -222,7 +222,7 @@
 					oResponseData = oData;
 					log_monitor.core.draw_column_chart();
                     log_monitor.core.show_log_list(oResponseData['logtable'], 0);
-					initPage(oResponseData['logtable'].length);
+					// initPage(oResponseData['logtable'].length);
 					intTable(oResponseData['grouptable']);
 					$('.graphArea .events').removeClass('eventsNumLoading').addClass('eventsNumOk');
 				},
@@ -235,7 +235,7 @@
 		log_monitor.core.draw_column_chart();
 		buttonSwitcher()
         log_monitor.core.show_log_list(oResponseData['logtable'], 0);
-		initPage(oResponseData['logtable'].length);
+		// initPage(oResponseData['logtable'].length);
 		intTable(oResponseData['grouptable']);
 		//requestChart();
 
