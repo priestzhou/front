@@ -65,28 +65,6 @@
 			}
 		}
 
-		//初始化分页控件
-		function initPage(totalCount, pageIndex, pageSize){
-			var totalCount = totalCount || 1;  //数据总记录数
-			var pageIndex = pageIndex || 0;  //页面索引初始值 
-			var pageSize  = pageSize || 10; //每页显示条数初始化，修改显示条数，修改这里即可
-			$("#pagination").pagination(totalCount, {
-				callback: pageSelectCallback, //PageCallback() 为翻页调用次函数。
-				prev_text: "上一页",
-				next_text: "下一页",
-				link_to: "javascript:void(0)",
-				items_per_page:pageSize,
-				num_edge_entries:1, //两侧首尾分页条目数   
-				num_display_entries:5, //连续分页主体部分分页条目数   
-				current_page: pageIndex, //当前页索引 
-				noPreNextCurrentCss: true //上一页下一页去除current样式
-			});
-		}
-		function pageSelectCallback(page_id) {
-            log_monitor.core.show_log_list(oResponseData['logtable'], page_id);
-			return false;
-		}
-		
 		var requestChart = function() {
 			var data = {
 				'data1' : {'test1':10,'test2':12,'test3':15,'test4':5,'test5':12,'test6':12,'test7':2,'test8':9},
@@ -222,7 +200,6 @@
 					oResponseData = oData;
 					log_monitor.core.draw_column_chart();
                     log_monitor.core.show_log_list(oResponseData['logtable'], 0);
-					// initPage(oResponseData['logtable'].length);
 					intTable(oResponseData['grouptable']);
 					$('.graphArea .events').removeClass('eventsNumLoading').addClass('eventsNumOk');
 				},
@@ -235,7 +212,6 @@
 		log_monitor.core.draw_column_chart();
 		buttonSwitcher()
         log_monitor.core.show_log_list(oResponseData['logtable'], 0);
-		// initPage(oResponseData['logtable'].length);
 		intTable(oResponseData['grouptable']);
 		//requestChart();
 
