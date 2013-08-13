@@ -83,18 +83,16 @@
     )
 )
 
-(defn format-logtable-header [ks]
-    (str/join ""
-        (flatten
-            [
-                "<tr>"
-                (for [k ks]
-                    (format "<th align='left'>%s</th>" k)
-                )
-                "</tr>"
-            ]
+(defn format-logtable-header [topics]
+    [
+        "<thead>"
+        "<tr>"
+        (for [k topics]
+            (format "<th align='left'>%s</th>" k)
         )
-    )
+        "</tr>"
+        "</thead>"
+    ]
 )
 
 (defn format-cell [data page page-size]
@@ -102,7 +100,8 @@
         end (min (+ start page-size) (count data))
         ]
         (when (< start end)
-            (str/join "" (flatten
+            [
+                "<tbody>"
                 (for [row (subvec data start end)]
                     [
                         "<tr>"
@@ -110,12 +109,22 @@
                         "</tr>"
                     ]
                 )
-            ))
+                "</tbody>"
+            ]
         )
     )
 )
 
-(defn show-list 
+(defn format-log-table [topics data page page-size]
+    (str/join "" (flatten
+        (concat
+            (format-logtable-header topics)
+            (format-cell data page page-size)
+        )
+    ))
+)
+
+(defn ^:export show-log-list 
     ([data page page-size]
         (let [data (to-cljs-coll data)]
             (when-not (empty? data)
@@ -123,14 +132,7 @@
                     (-> (dom/by-id "divContentList")
                         (xpath "div")
                         (xpath "table")
-                        (xpath "thead")
-                        (dom/set-html! (format-logtable-header ks))
-                    )
-                    (-> (dom/by-id "divContentList")
-                        (xpath "div")
-                        (xpath "table")
-                        (xpath "tbody")
-                        (dom/set-html! (format-cell data page page-size))
+                        (dom/set-html! (format-log-table ks data page page-size))
                     )
                 )
             )
@@ -138,6 +140,7 @@
     )
 
     ([data page]
-        (show-list data page 10)
+        (show-log-list data page 10)
     )
 )
+

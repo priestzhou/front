@@ -83,8 +83,7 @@
 			});
 		}
 		function pageSelectCallback(page_id) {
-			// intList(oResponseData['logtable'], page_id, 10);
-            log_monitor.core.show_list(oResponseData['logtable'], page_id);
+            log_monitor.core.show_log_list(oResponseData['logtable'], page_id);
 			return false;
 		}
 		
@@ -167,33 +166,6 @@
 			tags.push("</tbody>");
 			$('#divContentTable table').html(tags.join(''));
 		}
-		var intList = function (data, page, pageSize) {
-			page = page || 0;
-			pageSize = pageSize || 10;
-			
-			var tags = new Array();
-			var start = page * pageSize;
-			var end = start + pageSize;
-			end = end>data.length ? data.length : end;
-			var aHead = new Array();
-			aHead.push("<tr>");
-			if(data.length>0) {
-				for(key in data[0]) {
-					aHead.push("<th align='left'>" + key + "</th>");
-				}
-			}
-			aHead.push("</tr>");
-			$('#divContentList thead').html(aHead.join(''));
-			for (var i = start; i < end; i++) {
-				rowData = data[i];
-				tags.push("<tr>");
-				for(var key in rowData) {
-					tags.push("<td>" + rowData[key] + "</td>");
-				}
-				tags.push("</tr>");
-			}
-			$('#divContentList tbody.requestListContainer').html(tags.join(''));
-		}
 		var intervalid = {};
 		/**
 		var oResponseData = {
@@ -249,8 +221,7 @@
 				success: function(oData, status) {
 					oResponseData = oData;
 					log_monitor.core.draw_column_chart();
-					// intList(oResponseData['logtable']);
-                    log_monitor.core.show_list(oResponseData['logtable'], 0);
+                    log_monitor.core.show_log_list(oResponseData['logtable'], 0);
 					initPage(oResponseData['logtable'].length);
 					intTable(oResponseData['grouptable']);
 					$('.graphArea .events').removeClass('eventsNumLoading').addClass('eventsNumOk');
@@ -263,8 +234,7 @@
 		}
 		log_monitor.core.draw_column_chart();
 		buttonSwitcher()
-		// intList(oResponseData['logtable']);
-        log_monitor.core.show_list(oResponseData['logtable'], 0);
+        log_monitor.core.show_log_list(oResponseData['logtable'], 0);
 		initPage(oResponseData['logtable'].length);
 		intTable(oResponseData['grouptable']);
 		//requestChart();
