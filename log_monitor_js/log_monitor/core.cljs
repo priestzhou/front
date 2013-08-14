@@ -433,6 +433,12 @@
     ))
 )
 
+(defn select-time-range [time-range]
+    (doto (sel1 :#time_range_picker)
+        (dom/set-value! time-range)
+    )
+)
+
 (defn ^:export load []
     (draw-request-chart)
     (refresh)
@@ -466,5 +472,11 @@
             :mouseover highlight-choices
             :mouseout unhighlight-choices
         )
+    )
+    (dom/listen! (sel1 :#realtime_1min)
+        :click (partial select-time-range 60)
+    )
+    (dom/listen! (sel1 :#realtime_5min)
+        :click (partial select-time-range 300)
     )
 )
