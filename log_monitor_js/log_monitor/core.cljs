@@ -368,25 +368,21 @@
     (let [type (dom/attr 
             (sel1 (sel1 (sel1 :div.ButtonSwitcher) :ul) :li.selected) :_type
         )
+        subsections {
+            "list" (sel1 :#divContentList) 
+            "table" (sel1 :#divContentTable) 
+            "chart" (sel1 :#divContentChart)
+        }
+        selected (get subsections type)
         ]
-        (case type
-            "list" (do
-                (dom/show! (sel1 :#divContentList))
-                (dom/hide! (sel1 :#divContentTable))
-                (dom/hide! (sel1 :#divContentChart))
+        (doseq [x (vals subsections)]
+            (if (= x selected)
+                (dom/show! x)
+                (dom/hide! x)
             )
-            "table" (do 
-                (dom/hide! (sel1 :#divContentList))
-                (dom/show! (sel1 :#divContentTable))
-                (dom/hide! (sel1 :#divContentChart))
-            )
-            "chart" (do
-                (dom/hide! (sel1 :#divContentList))
-                (dom/hide! (sel1 :#divContentTable))
-                (dom/show! (sel1 :#divContentChart))
-                (draw-request-chart)
-            )
-            (.log js/console (format "unknown button switcher type: %s" type))
+        )
+        (when (= type "chart")
+            (draw-request-chart)
         )
     )
 )
