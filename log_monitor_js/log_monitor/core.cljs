@@ -389,18 +389,48 @@
 (defn click-on-time-picker [evt]
     (doto (sel1 :div.timeRangeMenu)
         (dom/remove-class! "hidden")
-        (dom/add-class! "visible")
+        ; (dom/add-class! "visible")
     )
     (.stopPropagation evt)
     (.preventDefault evt)
 )
 
 (defn cancel-time-picker []
-    (doto (sel1 :div.timeRangeMenu)
-        (dom/remove-class! "visible")
+    (doto (sel1 :#menu_lvl2)
         (dom/add-class! "hidden")
     )
-    true
+    (doto (sel1 :div.timeRangeMenu)
+        (dom/add-class! "hidden")
+    )
+)
+
+(defn click-on-readtime-btn [evt]
+    (doto (sel1 :#menu_lvl2)
+        (dom/toggle-class! "hidden")
+    )
+    (.stopPropagation evt)
+    (.preventDefault evt)
+)
+
+(defn highlight-choices [ev]
+    (doto (.-target ev)
+        (dom/add-class! "splMenuMouseOver")
+    )
+)
+
+(defn unhighlight-choices [ev]
+    (doto (.-target ev)
+        (dom/remove-class! "splMenuMouseOver")
+    )
+)
+
+(defn all-time-picker-li []
+    (vec (for [div (sel :div.outerMenuWrapper)
+        :let [ul (sel1 div :ul)]
+        li (sel ul :li)
+        ]
+        li
+    ))
 )
 
 (defn ^:export load []
@@ -427,5 +457,14 @@
     )
     (dom/listen! (sel1 :body)
         :click cancel-time-picker
+    )
+    (dom/listen! (sel1 :#realtime_btn)
+        :click click-on-readtime-btn
+    )
+    (doseq [x (all-time-picker-li)]
+        (dom/listen! x
+            :mouseover highlight-choices
+            :mouseout unhighlight-choices
+        )
     )
 )

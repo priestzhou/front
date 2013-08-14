@@ -395,7 +395,7 @@ input.searchButton {
 * {
     border-color: #CCCCCC;
 }
-.splMenuMoseOver {
+.splMenuMouseOver {
     background-color: #FCEEBE;
 }
 .timeRangeDiv {
@@ -545,7 +545,4 @@ div.layoutRow {
 
 .hidden {
     display: none;
-}
-.visible {
-    display: "";
 }
