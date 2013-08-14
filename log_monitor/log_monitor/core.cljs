@@ -9,7 +9,7 @@
         [ajax.core :as ajax]
     )
     (:use
-        [utilities.core :only (to-js-obj to-cljs-coll)]
+        [utilities.core :only (->js-obj ->cljs-coll)]
     )
 )
 
@@ -115,7 +115,7 @@
             }
         })
         ]
-        (.highcharts (js/jQuery "#VisualChartDiv") (to-js-obj config))
+        (.highcharts (js/jQuery "#VisualChartDiv") (->js-obj config))
     )
 )
 
@@ -152,7 +152,7 @@
             }
         )
         ]
-        (.highcharts (js/jQuery "#divContentChart") (to-js-obj config))
+        (.highcharts (js/jQuery "#divContentChart") (->js-obj config))
     )
 )
 
@@ -220,7 +220,7 @@
 (defn show-pager [ks data page page-size]
     (-> (js/jQuery "#pagination")
         (.pagination (count data)
-            (to-js-obj {
+            (->js-obj {
                 :callback (fn [page]
                     (update-log-list ks data page page-size)
                 )
