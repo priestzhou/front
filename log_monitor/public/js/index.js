@@ -40,16 +40,6 @@
 			return true;
 		});
 
-		//表格和图标切换
-		$('div.ButtonSwitcher>ul>li').click(function(){
-			var type = $(this).attr('_type');
-			$('div.ButtonSwitcher>ul>li').removeClass('selected');
-			$(this).addClass('selected');
-            log_monitor.core.show_button_switcher();
-		});
-		
-        log_monitor.core.show_button_switcher();
-        log_monitor.core.refresh();
  });
 })(jQuery);
 

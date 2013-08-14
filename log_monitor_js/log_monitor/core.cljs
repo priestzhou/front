@@ -364,29 +364,40 @@
     )
 )
 
-(defn show-button-switcher []
-    (let [type (dom/attr 
-            (sel1 (sel1 (sel1 :div.ButtonSwitcher) :ul) :li.selected) :_type
-        )
-        subsections {
-            "list" (sel1 :#divContentList) 
-            "table" (sel1 :#divContentTable) 
-            "chart" (sel1 :#divContentChart)
+(defn show-detail-section [type]
+    (let [subsections {
+            :list [(sel1 :#btn_switcher_list) (sel1 :#divContentList)]
+            :table [(sel1 :#btn_switcher_table) (sel1 :#divContentTable)]
+            :chart [(sel1 :#btn_switcher_chart) (sel1 :#divContentChart)]
         }
-        selected (get subsections type)
         ]
-        (doseq [x (vals subsections)]
-            (if (= x selected)
-                (dom/show! x)
-                (dom/hide! x)
+        (doseq [[k [btn div]] subsections]
+            (if (= k type)
+                (do
+                    (dom/add-class! btn "selected")
+                    (dom/show! div)
+                )
+                (do
+                    (dom/remove-class! btn "selected")
+                    (dom/hide! div)
+                )
             )
-        )
-        (when (= type "chart")
-            (draw-request-chart)
         )
     )
 )
 
 (defn ^:export load []
+    (draw-request-chart)
     (refresh)
+    (show-detail-section :list)
+
+    (dom/listen! (sel1 :#btn_switcher_list) 
+        :click (partial show-detail-section :list)
+    )
+    (dom/listen! (sel1 :#btn_switcher_table) 
+        :click (partial show-detail-section :table)
+    )
+    (dom/listen! (sel1 :#btn_switcher_chart) 
+        :click (partial show-detail-section :chart)
+    )
 )
