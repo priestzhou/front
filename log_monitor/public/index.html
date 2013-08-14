@@ -7,8 +7,17 @@
     <link rel="stylesheet" rev="stylesheet" href="./css/jquery.loadmask.css" type="text/css" />
     <link rel="stylesheet" rev="stylesheet" href="./css/jquery-ui.css" type="text/css" />
     <link rel="stylesheet" rev="stylesheet" href="./css/index.css" type="text/css" />
+    <script type="text/javascript" src="./js/jquery.js"></script>
+    <script type="text/javascript" src="./js/jquery-ui.js"></script>
+    <script type="text/javascript" src="./js/jquery.loadmask.min.js"></script>
+    <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="./js/chartConfig.js"></script>
+    <script type="text/javascript" src="./js/highcharts.js"></script>
+    <script type="text/javascript" src="./js/chartConfig.js"></script>
+    <script type="text/javascript" src="./js/jquery.pagination.js"></script>
+    <script type="application/javascript" src="./js/log_monitor.js"></script>
 </head>
-<body>
+<body onload="log_monitor.core.load()">
 <div class="wrap splView-timeline">
 	<div class="clearfix" id="header">
 		<div class="logo">
@@ -114,7 +123,7 @@
 					<div class='divContent' style="clear:both;padding-top:10px">
 						<div  ID='divContentList'>
 							<div>
-								<table class='table table-striped' style='border-bottom:1px solid #DDDDDD'></table>
+								<table class='table table-striped' style=''></table>
 							</div>
 							<div class="page-area" id="pagination"></div>
 						</div>
@@ -135,14 +144,5 @@
 	</div>
 </div>
 </body>
-<script type="text/javascript" src="./js/jquery.js"></script>
-<script type="text/javascript" src="./js/jquery-ui.js"></script>
-<script type="text/javascript" src="./js/jquery.loadmask.min.js"></script>
-<script type="text/javascript" src="./js/bootstrap.min.js"></script>
-<script type="text/javascript" src="./js/chartConfig.js"></script>
-<script type="text/javascript" src="./js/highcharts.js"></script>
-<script type="text/javascript" src="./js/chartConfig.js"></script>
-<script type="text/javascript" src="./js/jquery.pagination.js"></script>
-<script type="application/javascript" src="./js/log_monitor.js"></script>
 <script type="text/javascript" src="./js/index.js"></script>
 </html>

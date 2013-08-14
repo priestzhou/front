@@ -1,11 +1,14 @@
 (ns log-monitor.core
+    (:use-macros
+        [dommy.macros :only (sel1 node deftemplate)]
+    )
     (:require
         [clojure.string :as str]
-        [domina :as dom]
+        [dommy.core :as dom]
+        [dommy.template :as template]
         [ajax.core :as ajax]
     )
     (:use
-        [domina.xpath :only (xpath)]
         [utilities.core :only (to-js-obj to-cljs-coll)]
     )
 )
@@ -169,14 +172,12 @@
 )
 
 (defn format-header [topics]
-    [
-        "<thead>"
-        "<tr>"
-        (for [k topics]
-            (format "<th align='left'>%s</th>" k)
-        )
-        "</tr>"
-        "</thead>"
+    [:thead
+        [:tr
+            (for [k topics]
+                [:th {:align "left"} k]
+            )
+        ]
     ]
 )
 
@@ -185,16 +186,12 @@
         end (min (+ start page-size) (count data))
         ]
         (when (< start end)
-            [
-                "<tbody>"
+            [:tbody
                 (for [row (subvec data start end)]
-                    [
-                        "<tr>"
-                        (for [cell row] (format "<td>%s</td>" cell))
-                        "</tr>"
+                    [:tr
+                        (for [cell row] [:td cell])
                     ]
                 )
-                "</tbody>"
             ]
         )
     )
@@ -202,12 +199,12 @@
 
 (defn format-table 
     ([topics data page page-size]
-        (str/join "" (flatten
-            (concat
+        (template/compound-element
+            [:table {:class "table table-striped" :style "border-bottom:1px solid #DDDDDD"}
                 (format-header topics)
                 (format-cell data page page-size)
-            )
-        ))
+            ]
+        )
     )
     ([topics data]
         (format-table topics data 0 (count data))
@@ -215,10 +212,8 @@
 )
 
 (defn update-log-list [ks data page page-size]
-    (-> (dom/by-id "divContentList")
-        (xpath "div")
-        (xpath "table")
-        (dom/set-html! (format-table ks data page page-size))
+    (-> (sel1 (sel1 (sel1 :#divContentList) :div) :table)
+        (dom/replace! (format-table ks data page page-size))
     )
 )
 
@@ -275,26 +270,24 @@
 (defn show-group-table [data]
     (when-not (empty? data)
         (let [[topics data] (reformat-group-table data)]
-            (-> (dom/by-id "divContentTable")
-                (xpath "div")
-                (xpath "table")
-                (dom/set-html! (format-table topics data))
+            (-> (sel1 (sel1 (sel1 :#divContentTable) :div) :table)
+                (dom/replace! (format-table topics data))
             )
         )
     )
 )
 
 (defn show-ready []
-    (-> (dom/by-class "events")
-        (dom/remove-class! "eventsNumLoading")
-        (dom/add-class! "eventsNumOk")
+    (-> (sel1 :.events)
+        (dom/remove-class! :eventsNumLoading)
+        (dom/add-class! :eventsNumOk)
     )
 )
 
 (defn show-busy []
-    (-> (dom/by-class "events")
-        (dom/remove-class! "eventsNumOk")
-        (dom/add-class! "eventsNumLoading")
+    (-> (sel1 :.events)
+        (dom/remove-class! :eventsNumOk)
+        (dom/add-class! :eventsNumLoading)
     )
 )
 
@@ -314,7 +307,7 @@
 )
 
 (defn on-error [{:keys [status status-text]}]
-    (dom/log (format "fetch updates error: %d %s " status status-text))
+    (.log js/console (format "fetch updates error: %d %s " status status-text))
 )
 
 (defn periodically-update [id]
@@ -327,13 +320,13 @@
 (def arranged-update (atom nil))
 
 (defn get-time-range []
-    (-> (dom/by-id "time_range_picker")
+    (-> (sel1 :#time_range_picker)
         (dom/value)
     )
 )
 
 (defn get-keywords []
-    (-> (dom/by-id "SearchBar_0_0_0_id")
+    (-> (sel1 :#SearchBar_0_0_0_id)
         (dom/value)
     )
 )
@@ -369,4 +362,8 @@
             :error-handler on-error
         })
     )
+)
+
+(defn ^:export load []
+
 )
