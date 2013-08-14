@@ -400,4 +400,8 @@
     (dom/listen! (sel1 :#btn_switcher_chart) 
         :click (partial show-detail-section :chart)
     )
+
+    (dom/listen! (sel1 :#search_btn)
+        :click request_search
+    )
 )

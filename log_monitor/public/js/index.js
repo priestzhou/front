@@ -32,14 +32,6 @@
             log_monitor.core.request_search();
 			return true;
 		});
-		//查询按钮
-		$('input.searchButton').click(function(){
-			//$('div.graphArea').mask('Loading...')
-			//alert($('#SearchBar_0_0_0_id').val());
-            log_monitor.core.request_search();
-			return true;
-		});
-
  });
 })(jQuery);
 
