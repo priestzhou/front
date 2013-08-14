@@ -628,9 +628,7 @@
             "/image/sprite_button_icons.png" "@/log_monitor/public/image/sprite_button_icons.png"
             "/js/bootstrap.js" "@/log_monitor/public/js/bootstrap.js"
             "/js/bootstrap.min.js" "@/log_monitor/public/js/bootstrap.min.js"
-            "/js/chartConfig.js" "@/log_monitor/public/js/chartConfig.js"
             "/js/highcharts.js" "@/log_monitor/public/js/highcharts.js"
-            "/js/index.js" "@/log_monitor/public/js/index.js"
             "/js/jquery-1.4.2.min.js" "@/log_monitor/public/js/jquery-1.4.2.min.js"
             "/js/jquery-ui.js" "@/log_monitor/public/js/jquery-ui.js"
             "/js/jquery.js" "@/log_monitor/public/js/jquery.js"
@@ -638,6 +636,7 @@
             "/js/jquery.pagination.js" "@/log_monitor/public/js/jquery.pagination.js"
 
             "/js/log_monitor.js" "@/resources/js/log_monitor.js"
+            "/js/helper.js" "@/resources/js/helper.js"
         })
         post-for-queryid
         get-for-updating

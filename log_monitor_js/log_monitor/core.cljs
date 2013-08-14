@@ -106,7 +106,7 @@
     :series []
 })
 
-(defn ^:export draw-column-chart []
+(defn draw-column-chart []
     (let [config (merge default-config-column {
             :series [{:name "test" :data [1 2 3 4 5 6]}]
             :xAxis {
@@ -135,7 +135,7 @@
     ))
 )
 
-(defn ^:export draw-request-chart []
+(defn draw-request-chart []
     (let [data {
             "data1" {"test1" 10 "test3" 15 "test2" 12 "test5" 12 "test4" 5 "test7" 2 "test6" 12 "test8" 9} 
             "data3" {"test1" 2 "test3" 6 "test2" 15 "test5" 23 "test4" 9 "test7" 17 "test6" 5 "test8" 7} 
@@ -217,7 +217,7 @@
     )
 )
 
-(defn ^:export show-pager [ks data page page-size]
+(defn show-pager [ks data page page-size]
     (-> (js/jQuery "#pagination")
         (.pagination (count data)
             (to-js-obj {
@@ -291,7 +291,7 @@
     )
 )
 
-(defn ^:export refresh 
+(defn refresh 
     ([data]
         (draw-column-chart)
         (show-log-list (get data "logtable"))
@@ -331,7 +331,7 @@
     )
 )
 
-(defn ^:export request-search []
+(defn request-search []
     (swap! arranged-update (fn [itv]
         (when itv
             (js/clearInterval itv)
