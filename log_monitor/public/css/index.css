@@ -323,7 +323,6 @@ input.searchButton {
     z-index: 500;
 }
 .splMenu, .splMenu div.outerMenuWrapper {
-    display: none;
     position: absolute;
     text-align: left;
 }
@@ -542,4 +541,11 @@ div.layoutRow {
     background: url("../image/loader.gif") no-repeat;
     height: 22px;
     line-height: 24px;
+}
+
+.hidden {
+    display: none;
+}
+.visible {
+    display: "";
 }

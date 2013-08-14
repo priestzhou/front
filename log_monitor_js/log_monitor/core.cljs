@@ -386,6 +386,23 @@
     )
 )
 
+(defn click-on-time-picker [evt]
+    (doto (sel1 :div.timeRangeMenu)
+        (dom/remove-class! "hidden")
+        (dom/add-class! "visible")
+    )
+    (.stopPropagation evt)
+    (.preventDefault evt)
+)
+
+(defn cancel-time-picker []
+    (doto (sel1 :div.timeRangeMenu)
+        (dom/remove-class! "visible")
+        (dom/add-class! "hidden")
+    )
+    true
+)
+
 (defn ^:export load []
     (draw-request-chart)
     (refresh)
@@ -403,5 +420,12 @@
 
     (dom/listen! (sel1 :#search_btn)
         :click request_search
+    )
+
+    (dom/listen! (sel1 :#TimeRangePicker_0_1_0)
+        :click click-on-time-picker
+    )
+    (dom/listen! (sel1 :body)
+        :click cancel-time-picker
     )
 )
