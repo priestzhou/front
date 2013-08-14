@@ -45,23 +45,10 @@
 			var type = $(this).attr('_type');
 			$('div.ButtonSwitcher>ul>li').removeClass('selected');
 			$(this).addClass('selected');
-			buttonSwitcher();
+            log_monitor.core.show_button_switcher();
 		});
 		
-		function buttonSwitcher(){
-			var type = $('div.ButtonSwitcher>ul>li.selected').attr('_type');
-			$('div.divContent > div').hide();
-			if(type == 'list') {
-				$('#divContentList').show();
-			} else if(type == 'table') {
-				$('#divContentTable').show();
-			} else {
-				$('#divContentChart').show();
-                log_monitor.core.draw_request_chart();
-			}
-		}
-
-		buttonSwitcher()
+        log_monitor.core.show_button_switcher();
         log_monitor.core.refresh();
  });
 })(jQuery);

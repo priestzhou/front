@@ -1,6 +1,6 @@
 (ns log-monitor.core
     (:use-macros
-        [dommy.macros :only (sel1 node deftemplate)]
+        [dommy.macros :only (sel sel1 node deftemplate)]
     )
     (:require
         [clojure.string :as str]
@@ -364,6 +364,33 @@
     )
 )
 
-(defn ^:export load []
+(defn show-button-switcher []
+    (let [type (dom/attr 
+            (sel1 (sel1 (sel1 :div.ButtonSwitcher) :ul) :li.selected) :_type
+        )
+        ]
+        (case type
+            "list" (do
+                (dom/show! (sel1 :#divContentList))
+                (dom/hide! (sel1 :#divContentTable))
+                (dom/hide! (sel1 :#divContentChart))
+            )
+            "table" (do 
+                (dom/hide! (sel1 :#divContentList))
+                (dom/show! (sel1 :#divContentTable))
+                (dom/hide! (sel1 :#divContentChart))
+            )
+            "chart" (do
+                (dom/hide! (sel1 :#divContentList))
+                (dom/hide! (sel1 :#divContentTable))
+                (dom/show! (sel1 :#divContentChart))
+                (draw-request-chart)
+            )
+            (.log js/console (format "unknown button switcher type: %s" type))
+        )
+    )
+)
 
+(defn ^:export load []
+    (refresh)
 )
