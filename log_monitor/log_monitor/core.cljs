@@ -9,7 +9,7 @@
         [ajax.core :as ajax]
     )
     (:use
-        [utilities.core :only (->js-obj ->cljs-coll)]
+        [utilities.core :only (->js-obj ->cljs-coll enumerate nested-merge)]
     )
 )
 
@@ -79,7 +79,6 @@
         :title {:text ""}
     }
     :yAxis { 
-        :min 1
         :title {
             :text ""
         }
@@ -108,50 +107,96 @@
     :series []
 })
 
+(def data (atom {"meta" [] "grouptable" [] "logtable" []}))
+
 (defn extract-scc-xaxis [xaxis]
     (vec (map #(second (str/split % #" ")) xaxis))
 )
 
-(defn draw-search-count-chart [data]
-    (let [config (merge default-config-column {
-            :series [{:name "whatever" :data (get data "search-count")}]
+(defn draw-search-count-chart []
+    (let [d (get @data "matchchart")
+        config (nested-merge default-config-column {
+            :series [{:name "whatever" :data (get d "search-count")}]
             :xAxis {
-                :categories (extract-scc-xaxis (get data "time-series"))
+                :categories (extract-scc-xaxis (get d "time-series"))
                 :title {:text ""}
             }
         })
         ]
         (.highcharts (js/jQuery "#VisualChartDiv") (->js-obj config))
         (dom/set-text! (sel1 :#matched_count) 
-            (format "%d个匹配事件" (reduce + (get data "search-count")))
+            (format "%d个匹配事件" (reduce + (get d "search-count")))
         )
     )
 )
 
-(defn calc-series [data]
+(defn format-gkeys [gkeys]
+    (let [gkeys (get gkeys "gKeys")]
+        (str/join ","
+            (for [[k v] (into (sorted-map) gkeys)]
+                (format "%s=%s" k v)
+            )
+        )
+    )
+)
+
+(defn extract-group-chart-data [gid data]
+    (vec (for [row data]
+        (let [events (get row "events")
+            point (for [event events 
+                :when (= (get event "gId") gid)
+                [k v] event
+                :when (not= k "gId")
+                ]
+                v
+            )
+            ]
+            (if (> (count point) 1)
+                (.log js/console (format "find same gid in one time: %s" (pr-str row)))
+            )
+            (if (empty? point)
+                0
+                (first point)
+            )
+        )
+    ))
+)
+
+(defn calc-series [gmeta data]
     {:series
-        (vec (for [[ser dict] data]
-            {:name ser :data (vec (for [[_ v] dict] v))}
+        (vec (for [[gid ks] (enumerate gmeta)]
+            {
+                :name (format-gkeys ks) 
+                :data (extract-group-chart-data gid data)
+            }
         ))
     }
 )
 
 (defn calc-xaxis [data]
-    (vec (sort
-        (let [[_ snd] (first data)]
-            (for [[k] snd] k)
+    (vec (map
+        #(-> %
+            (get "timestamp")
+            (str/split " ")
+            (second)
         )
+        data
     ))
 )
 
-(defn draw-request-chart []
-    (let [data {
-            "data1" {"test1" 10 "test3" 15 "test2" 12 "test5" 12 "test4" 5 "test7" 2 "test6" 12 "test8" 9} 
-            "data3" {"test1" 2 "test3" 6 "test2" 15 "test5" 23 "test4" 9 "test7" 17 "test6" 5 "test8" 7} 
-            "data2" {"test1" 5 "test3" 10 "test2" 11 "test5" 13 "test4" 11 "test7" 21 "test6" 10 "test8" 19}
-        }
-        config (merge default-config-area
-            (calc-series data)
+(defn log-yaxis []
+    (if (dom/has-class? (sel1 :#btn_chart_log) "selected")
+        {:yAxis {:type "logarithmic"}}
+        nil
+    )
+)
+
+(defn draw-group-chart []
+    (let [dat @data
+        gmeta (get dat "meta")
+        data (get dat "grouptable")
+        config (nested-merge default-config-area
+            (calc-series gmeta data)
             {
                 :xAxis {:categories (calc-xaxis data)}
                 :tooltip {
@@ -166,6 +211,7 @@
                     )
                 }
             }
+            (log-yaxis)
         )
         ]
         (.highcharts (js/jQuery "#divContentChart") (->js-obj config))
@@ -263,29 +309,76 @@
         )
     )
 
-    ([data]
-        (show-log-list data 0 10)
+    ([]
+        (show-log-list (get @data "logtable") 0 10)
     )
 )
 
-(defn flatten-gkeys [data]
-    (vec (for [row data]
-        (merge 
-            (dissoc row "gKeys")
-            (get row "gKeys")
-        )
+(defn extract-topics [gmeta]
+    (vec (concat 
+        ["timestamp"]
+        (sort (into #{}
+            (for [x gmeta
+                k (keys (get x "gKeys"))
+                ]
+                k
+            )
+        ))
+        (sort (into #{}
+            (for [x gmeta
+                k (keys x)
+                :when (not= k "gKeys")
+                ]
+                k
+            )
+        ))
     ))
 )
 
-(defn reformat-group-table [data]
-    (extract-table-data
-        (flatten-gkeys data)
+(defn extract-data [topic gmeta event]
+    (cond
+        (contains? event topic) (get event topic)
+        :else (let [gid (get event "gId")
+            gkeys (get (get gmeta gid) "gKeys")
+            ]
+            (if-let [x (get gkeys topic)]
+                x
+                ""
+            )
+        )
     )
 )
 
-(defn show-group-table [data]
-    (when-not (empty? data)
-        (let [[topics data] (reformat-group-table data)]
+(defn reformat-data [topics gmeta data]
+    (vec (for [row data
+        event (get row "events")
+        ]
+        (vec (cons 
+            (get row "timestamp")
+            (for [topic (rest topics)]
+                (extract-data topic gmeta event)
+            )
+        ))
+    ))
+)
+
+(defn reformat-group-table [gmeta data]
+    (let [topics (extract-topics gmeta)]
+        [
+            topics
+            (reformat-data topics gmeta data)
+        ]
+    )
+)
+
+(defn show-group-table []
+    (let [dat @data
+        gmeta (get dat "meta")
+        d (get dat "grouptable")
+        ]
+    )
+    (when-not (empty? d)
+        (let [[topics data] (reformat-group-table gmeta d)]
             (-> (sel1 (sel1 (sel1 :#divContentTable) :div) :table)
                 (dom/replace! (format-table topics data))
             )
@@ -307,15 +400,13 @@
     )
 )
 
-(defn refresh 
-    ([data]
-        (draw-search-count-chart (get data "matchchart"))
-        (show-log-list (get data "logtable"))
-        (show-group-table (get data "grouptable"))
-        (show-ready)
-    )
-
-    ([] (refresh {"grouptable" [] "logtable" []}))
+(defn refresh [d]
+    (reset! data d)
+    (draw-search-count-chart)
+    (show-log-list)
+    (show-group-table)
+    (draw-group-chart)
+    (show-ready)
 )
 
 (defn fetch-log-update-succeed [response]
@@ -401,7 +492,16 @@
                 )
             )
         )
+        (if (= type :chart)
+            (dom/remove-class! (sel1 :#btn_chart_log) "hidden")
+            (dom/add-class! (sel1 :#btn_chart_log) "hidden")
+        )
     )
+)
+
+(defn click-on-logarithmic []
+    (dom/toggle-class! (sel1 :#btn_chart_log) "selected")
+    (draw-group-chart)
 )
 
 (defn click-on-time-picker [evt]
@@ -457,8 +557,6 @@
 )
 
 (defn ^:export load []
-    (draw-request-chart)
-    (refresh)
     (show-detail-section :list)
 
     (dom/listen! (sel1 :#btn_switcher_list) 
@@ -469,6 +567,9 @@
     )
     (dom/listen! (sel1 :#btn_switcher_chart) 
         :click (partial show-detail-section :chart)
+    )
+    (dom/listen! (sel1 :#btn_chart_log)
+        :click click-on-logarithmic
     )
 
     (dom/listen! (sel1 :#search_btn)

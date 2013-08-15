@@ -1,6 +1,19 @@
 (ns utilities.core
 )
 
+(defn zip [& args]
+    (apply map vector args)
+)
+
+(defn enumerate 
+    ([init xs]
+    (zip (iterate inc init) xs))
+    
+    ([xs]
+    (enumerate 0 xs))
+)
+
+
 (declare ->js-obj)
 
 (defn- ->js-array [arr]
@@ -53,5 +66,18 @@
         ; not only non-negative integers
         (instance? js/Object o) (->cljs-map o)
         :else o
+    )
+)
+
+
+(defn nested-merge [& maps]
+    (apply merge-with (fn [val-in-result val-in-latter]
+            (cond
+                (and (map? val-in-result) (map? val-in-latter))
+                    (nested-merge val-in-result val-in-latter)
+                :else val-in-latter
+            )
+        )
+        maps
     )
 )
