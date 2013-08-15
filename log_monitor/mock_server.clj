@@ -11,7 +11,8 @@
             (= (:uri req) "/query/create")
         )
         (println "post-for-queryid")
-        (prn req)
+        (println req)
+        (println (slurp (:body req)))
         {:status 202
             :headers {
                 "Access-Control-Allow-Origin" "*"

@@ -108,16 +108,23 @@
     :series []
 })
 
-(defn draw-column-chart []
+(defn extract-scc-xaxis [xaxis]
+    (vec (map #(second (str/split % #" ")) xaxis))
+)
+
+(defn draw-search-count-chart [data]
     (let [config (merge default-config-column {
-            :series [{:name "test" :data [1 2 3 4 5 6]}]
+            :series [{:name "whatever" :data (get data "search-count")}]
             :xAxis {
-                :categories ["A" "B" "C" "D" "E" "F"]
+                :categories (extract-scc-xaxis (get data "time-series"))
                 :title {:text ""}
             }
         })
         ]
         (.highcharts (js/jQuery "#VisualChartDiv") (->js-obj config))
+        (dom/set-text! (sel1 :#matched_count) 
+            (format "%d个匹配事件" (reduce + (get data "search-count")))
+        )
     )
 )
 
@@ -302,7 +309,7 @@
 
 (defn refresh 
     ([data]
-        (draw-column-chart)
+        (draw-search-count-chart (get data "matchchart"))
         (show-log-list (get data "logtable"))
         (show-group-table (get data "grouptable"))
         (show-ready)
@@ -320,7 +327,10 @@
 )
 
 (defn periodically-update [id]
-    (ajax/GET (format "/query/get?query-id=%s&timestamp=%d" id (.now js/Date)) {
+    (ajax/GET (ajax/uri-with-params "/query/get" {
+            "query-id" id
+            "timestamp" (.now js/Date)
+        }) {
         :handler fetch-log-update-succeed
         :error-handler on-error
     })
@@ -352,10 +362,9 @@
         keywords (get-keywords)
         interval (if (= time-range 60) 5000 10000)
         ]
-        (ajax/POST 
-            (ajax/uri-with-params "/query/create" {
-                "querystring" keywords 
-                "timewindow" time-range
+        (ajax/POST (ajax/uri-with-params "/query/create" {
+                :query keywords 
+                :timewindow time-range
             }) {
             :handler (fn [response]
                 (when-let [qid (get response "query-id")]
