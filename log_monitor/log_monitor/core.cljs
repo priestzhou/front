@@ -17,6 +17,7 @@
     :chart {
         :type "column"
         :height 100
+        :animation false
     }
     :credits {
         :enabled false
@@ -46,6 +47,7 @@
     }
     :plotOptions {
         :column {
+            :animation false
             :pointWidth 15
             :pointPadding 0.2
         }
@@ -147,7 +149,14 @@
                 :xAxis {:categories (calc-xaxis data)}
                 :tooltip {
                     :headerFormat ""
-                    :formatter js/request_chart_tooltip
+                    :formatter (fn []
+                        (this-as me
+                            (format "%s 总计%d次" 
+                                (.-category (.-point me)) 
+                                (.-y (.-point me))
+                            )
+                        )
+                    )
                 }
             }
         )
@@ -311,7 +320,7 @@
 )
 
 (defn periodically-update [id]
-    (ajax/GET (str "/query/get?query-id=" id) {
+    (ajax/GET (format "/query/get?query-id=%s&timestamp=%d" id (.now js/Date)) {
         :handler fetch-log-update-succeed
         :error-handler on-error
     })
@@ -375,11 +384,11 @@
             (if (= k type)
                 (do
                     (dom/add-class! btn "selected")
-                    (dom/show! div)
+                    (dom/remove-class! div "hidden")
                 )
                 (do
                     (dom/remove-class! btn "selected")
-                    (dom/hide! div)
+                    (dom/add-class! div "hidden")
                 )
             )
         )
@@ -389,7 +398,6 @@
 (defn click-on-time-picker [evt]
     (doto (sel1 :div.timeRangeMenu)
         (dom/remove-class! "hidden")
-        ; (dom/add-class! "visible")
     )
     (.stopPropagation evt)
     (.preventDefault evt)
