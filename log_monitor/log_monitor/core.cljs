@@ -219,18 +219,10 @@
 )
 
 (defn extract-table-data [data]
-    (when-not (empty? data)
-        (let [ks (vec (for [[k] (get data 0)] k))]
-            [
-                ks
-                (vec (for [row data]
-                    (vec (for [k ks]
-                        (get row k)
-                    ))
-                ))
-            ]
-        )
-    )
+    [
+        (get data "header")
+        (get data "data")
+    ]
 )
 
 (defn format-header [topics]
@@ -374,13 +366,14 @@
 (defn show-group-table []
     (let [dat @data
         gmeta (get dat "meta")
-        d (get dat "grouptable")
+        da (get dat "grouptable")
         ]
-    )
-    (when-not (empty? d)
-        (let [[topics data] (reformat-group-table gmeta d)]
-            (-> (sel1 (sel1 (sel1 :#divContentTable) :div) :table)
-                (dom/replace! (format-table topics data))
+        (when-not (empty? da)
+            (let [[topics d] (reformat-group-table gmeta da)]
+                (.log js/console (pr-str d))
+                (-> (sel1 (sel1 (sel1 :#divContentTable) :div) :table)
+                    (dom/replace! (format-table topics d))
+                )
             )
         )
     )
