@@ -557,6 +557,11 @@
     (doto (sel1 :#time_range_picker)
         (dom/set-value! time-range)
     )
+    (case time-range
+        60 (dom/set-text! (sel1 :#time_range_activator) "1分钟")
+        300 (dom/set-text! (sel1 :#time_range_activator) "5分钟")
+        (.log js/console (format "unknown time range: %d" time-range))
+    )
 )
 
 (defn ^:export load []

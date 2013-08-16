@@ -38,7 +38,7 @@ mock_server_js = env.compileJs('log_monitor.js', 'log_monitor',
     libs=[env.File('$BUILD_DIR/jsutilities.jar'),
         env.File('$EXTLIB/cljs-ajax-0.1.6.jar'),
     ],
-    options={":optimizations": ":advanced", #":pretty-print": True,
+    options={":optimizations": ":simple", ":pretty-print": True,
         ":externs": ["\"%s\"" % (env.File('resources/js/goog.extern.js').abspath),
         ],
     }
