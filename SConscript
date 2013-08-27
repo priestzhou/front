@@ -13,6 +13,8 @@ stmainjs = env.install(env.compileJs('front_st_samplecase.js', 'smoketest',
 ))
 
 st_samplecase_js = env.compileJs('samplecase.js', 'sample_st_case',
+    libs=[env.File('$EXTLIB/dommy-0.1.2-SNAPSHOT.jar'),
+    ],
     options={":optimizations": ":advanced"}
 )
 

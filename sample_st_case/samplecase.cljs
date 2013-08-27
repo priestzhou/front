@@ -1,9 +1,10 @@
 (ns samplecase
-    (:require
-        [domina :as domina]
+    (:use-macros
+        [dommy.macros :only (sel1)]
     )
-    (:use
-        [domina.xpath :only (xpath)]
+    (:require
+        [dommy.core :as dom]
+        [dommy.template :as template]
     )
 )
 
@@ -12,7 +13,7 @@
         response (.-responseText xhr)
         ]
         (when-not (= response "EOF")
-            (domina/append! (xpath "//body") response)
+            (dom/set-html! (sel1 :body) (+ (dom/html (sel1 :body)) response))
             (recur)
         )
     )
