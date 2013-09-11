@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+<head>
+    <title>Data Wise</title>
+    <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+    <link rel="stylesheet" rev="stylesheet" href="./css/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" rev="stylesheet" href="./css/jquery.loadmask.css" type="text/css" />
+    <link rel="stylesheet" rev="stylesheet" href="./css/jquery-ui.css" type="text/css" />
+    <link rel="stylesheet" rev="stylesheet" href="./css/index.css" type="text/css" />
+    <script type="application/javascript" src="./js/jquery-1.10.2.min.js"></script>
+    <script type="application/javascript" src="./js/jquery-ui.js"></script>
+    <script type="application/javascript" src="./js/jquery.loadmask.min.js"></script>
+    <script type="application/javascript" src="./js/bootstrap.min.js"></script>
+    <script type="application/javascript" src="./js/highcharts.js"></script>
+    <script type="application/javascript" src="./js/jquery.pagination.js"></script>
+    <script type="application/javascript" src="./js/log_query.js"></script>
+</head>
+<body onload="log_query.core.load()">
+
+<nav id="navigator">
+    <a id="logo" href="/">
+        <img width="200" height="68" src="./image/logo.png" alt="Data Wise">
+    </a>
+    <ul id="tabs">
+        <li class="navItem"><span>监控</span></li>
+    </ul>
+</nav>
+
+<div id="main_view">
+    <div class="container-fluid">
+        <div class="row-fluid tab-pane" id="containerGalileo">
+            <div class="span12">
+                <div class="layoutRow oneColRow splClearfix splSearchControls-inline">
+                    <table cellspacing="0" class="mainSearchControlsTable"><tbody><tr>
+                        <td width="100%">
+                            <div id="SearchBar_0_0_0" class="SplunkModule SearchBar">
+                            <fieldset>
+                                <div class="searchFieldWrapper hasAssistant">
+                                    <label for="SearchBar_0_0_0_id" style="display: none;">搜索</label>
+                                    <div class="searchFieldWrapperInner">
+                                        <textarea id="SearchBar_0_0_0_id" class="splFont-mono visibleSearchBar" style="line-height: 16px; margin-top: 0px;" spellcheck="false" name="q" value="cmd sourcetype=&quot;hadoop&quot; dst=&quot;*&quot; | timechart count by host"></textarea>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                        </td>
+                        <td>
+                        <div class='timeRangeDiv'>
+                            <div s:parentmodule="#SearchBar_0_0_0" id="TimeRangePicker_0_1_0" class="SplunkModule TimeRangePicker">
+                                <a class="timeRangeActivatorWrapper splBorder splBorder-nsew splBackground-primary" href="#">
+                                    <span class="splIcon splIcon-triangle-4-s dropDown">下拉</span>
+                                    <span id="time_range_activator" class="timeRangeActivator">1分钟</span>
+                                    <input type="hidden" id="time_range_picker" value='60'/>
+                                </a>
+                            </div>
+                            <div class="hidden outerMenuWrapper splShadow splMenu splMenu-primary timeRangeMenu" style="top: 25px; left: 0px;">
+                            <ul>
+                                <div class="innerMenuWrapper">
+                                <li class="hasSubMenu sfhover">
+                                    <a id="realtime_btn" href="javascript:void(0);" tabindex="-1" class="menuItemLink">实时</a>
+                                    <span class="splIcon splIcon-triangle-4-e dropDown">Submenu</span>
+                                    <div id="menu_lvl2" class="hidden outerMenuWrapper splShadow" style="left: -162px;top:0px;">
+                                        <ul>
+                                        <div class="innerMenuWrapper">
+                                        <li class="timeRangePreset"><a id="realtime_1min" href="javascript:void(0);" tabindex="-1" class="menuItemLink" earliest_time="60" latest_time="rt">1 分钟窗口</a></li>
+                                        <li class="timeRangePreset"><a id="realtime_5min" href="javascript:void(0);" tabindex="-1" class="menuItemLink" earliest_time="300" latest_time="rt">5 分钟窗口</a></li>
+                                        </div>
+                                        </ul>
+                                    </div>
+                                </li>
+                                </div>
+                            </ul>
+                            </div>
+                        </div>
+                        </td>
+
+                        <td>
+                            <div s:parentmodule="#TimeRangePicker_0_1_0" id="SubmitButton_0_2_0" class="SplunkModule SubmitButton">
+                            <fieldset>
+                                <input type="submit" title="Search" id="search_btn" class="searchButton" value="">
+                            </fieldset>
+                            </div>
+                        </td>
+                    </tr></tbody></table>
+                </div>
+                <div class='layoutRow oneColRow splClearfix graphArea'>
+                    <div class='eventsDiv'>
+                        <h2 id="matched_count" class="events eventsNumOk">0 个匹配事件</h2>
+                    </div>
+                    <div class='TimelineContainer'>
+                        <div class='VisualObject' ID='VisualChartDiv'>
+
+                        </div>
+                    </div>
+                </div>
+                <div class='searchResultDiv' style="clear:both">
+                    <div>
+                        <div class='SplunkModule ButtonSwitcher' style="clear:both;padding-left:10px;padding-top:5px">
+                            <ul>
+                                <li id="btn_switcher_list" class="selected"><a class="splIcon-events-list" title="事件列表"></a></li>
+                                <li id="btn_switcher_table" class=""><a class="splIcon-results-table" title="表格"></a></li>
+                                <li id="btn_switcher_chart" class=""><a class="splIcon-results-chart" title="结果图表"></a></li>
+                                <li id="btn_chart_log" class=""><a class="splIcon-results-chart" title="对数"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class='divContent' style="clear:both;padding-top:10px">
+                        <div  ID='divContentList'>
+                            <div>
+                                <table class='table table-striped' style=''></table>
+                            </div>
+                            <div class="page-area" id="pagination"></div>
+                        </div>
+                        <div  ID='divContentTable'>
+                            <div>
+                                <table class='table table-striped' style='border-bottom:1px solid #DDDDDD'>
+
+                                </table>
+                            </div>
+                        </div>
+                        <div ID='divContentChart' style='width:99%'>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
