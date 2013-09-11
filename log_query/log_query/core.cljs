@@ -281,7 +281,7 @@
     (.log js/console (format "fetch updates error: %d %s " status status-text))
 )
 
-(defn periodically-update [id]
+(defn update-tables [id]
     (ajax/GET (ajax/uri-with-params "/query/get" {
             "query-id" id
             "timestamp" (.now js/Date)
@@ -290,8 +290,6 @@
         :error-handler on-error
     })
 )
-
-(def arranged-update (atom nil))
 
 (defn get-time-range []
     (-> (sel1 :#time_range_picker)
@@ -306,12 +304,6 @@
 )
 
 (defn request-search []
-    (swap! arranged-update (fn [itv]
-        (when itv
-            (js/clearInterval itv)
-            nil
-        )
-    ))
     (show-busy)
     (let [time-range (get-time-range)
         keywords (get-keywords)
@@ -323,13 +315,7 @@
             }) {
             :handler (fn [response]
                 (when-let [qid (get response "query-id")]
-                    (periodically-update qid)
-                    (reset! arranged-update
-                        (js/setInterval
-                            (partial periodically-update qid)
-                            interval
-                        )
-                    )
+                    (update-tables qid)
                 )
             )
             :error-handler on-error
