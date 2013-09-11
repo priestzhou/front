@@ -48,6 +48,44 @@ section {
     font-size: 13px;
 }
 
+#btn_switcher {
+    clear:both;
+    padding-left:10px;
+    padding-top:5px
+}
+#btn_switcher ul {
+    float: left;
+    list-style: none outside none;
+    margin: 3px 0 0;
+    padding: 0;
+}
+#btn_switcher ul li.selected, #btn_switcher ul li.selected:hover {
+    background-color: #999999;
+    box-shadow: 1px 1px 1px 0 #333333 inset;
+}
+#btn_switcher ul li {
+    float: left;
+    height: 19px;
+    margin-right: 2px;
+    width: 19px;
+    border-color: #FFFFFF;
+    border-radius: 3px 3px 3px 3px;
+}
+#btn_switcher ul li.selected .splIcon-events-list {
+    background-position: 0 -740px;
+}
+#btn_switcher ul li.selected, #btn_switcher ul li.selected:hover {
+    background-color: #999999;
+    box-shadow: 1px 1px 1px 0 #333333 inset;
+}
+#btn_switcher ul li.selected, #btn_switcher ul li.selected:hover {
+    background-color: #999999;
+    box-shadow: 1px 1px 1px 0 #333333 inset;
+}
+#btn_switcher ul li a {
+    cursor: pointer;
+    display: block;
+}
 
 .splClearfix:after {
     clear: both;
