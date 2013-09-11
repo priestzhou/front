@@ -459,9 +459,6 @@ div.layoutRow {
 .splIcon-results-table {
     background-position: -39px -780px;
 }
-.splIcon-results-chart {
-    background-position: -39px -800px;
-}
 .splIcon-events-list {
     background-position: -39px -740px;
 }
@@ -469,10 +466,10 @@ div.layoutRow {
     cursor: pointer;
     display: block;
 }
-.splIcon-events-list, .splIcon-events-table, .splIcon-results-table, .splIcon-results-chart, .splIconicLinkIcon, .splButtonIcon, span.splMenuIcon {
+.splIcon-events-list, .splIcon-events-table, .splIcon-results-table, .splIconicLinkIcon, .splButtonIcon, span.splMenuIcon {
     background-image: url("../image/sprite_button_icons.png");
 }
-.splIcon-events-list, .splIcon-events-table, .splIcon-results-table, .splIcon-results-chart {
+.splIcon-events-list, .splIcon-events-table, .splIcon-results-table {
     background-repeat: no-repeat;
     height: 13px;
     margin: 3px;

@@ -54,58 +54,6 @@
     :series []
 })
 
-(def default-config-area {
-    :chart {
-        :type "area"
-        :zoomType "x"
-    }
-    :credits {
-        :enabled false
-    }
-    :title {:text ""}
-    :subtitle {:text ""}
-    :legend {
-        :layout "vertical"
-        :align "left"
-        :verticalAlign "top"
-        :x 100
-        :y 0
-        :floating true
-        :borderWidth 1
-        :backgroundColor "#FFFFFF"
-    }
-    :xAxis {
-        :title {:text ""}
-    }
-    :yAxis { 
-        :title {
-            :text ""
-        }
-    }
-    :plotOptions {
-        :area {
-            :fillColor {
-                :linearGradient {:x1 0 :y1 0 :x2 0 :y2 1}
-                :stops []
-            }
-            :lineWidth 1
-            :marker {
-                :enabled false
-            }
-            :shadow false
-            :states {
-                :hover {
-                    :lineWidth 1
-                }
-            }
-        }
-    }
-    :tooltip {
-        :pointFormat "{point.y:,.0f}"
-    }
-    :series []
-})
-
 (def data (atom {"meta" [] "grouptable" [] "logtable" []}))
 
 (defn parse-date [date-str]
@@ -140,84 +88,6 @@
         (dom/set-text! (sel1 :#matched_count) 
             (format "%d个匹配事件" (reduce + (get d "search-count")))
         )
-    )
-)
-
-(defn format-gkeys [gkeys]
-    (let [variable (first (for [k (keys gkeys) :when (not= k "gKeys")] k))
-        gkeys (get gkeys "gKeys")
-        ]
-        (format "%s[%s]" 
-            variable
-            (str/join ","
-                (for [[k v] (into (sorted-map) gkeys)]
-                    (format "%s=%s" k v)
-                )
-            )
-        )
-    )
-)
-
-(defn extract-group-chart-data [gid data]
-    (vec (for [row data]
-        (let [events (get row "events")
-            date (parse-date (get row "timestamp"))
-            point (for [event events 
-                :when (= (get event "gId") gid)
-                [k v] event
-                :when (not= k "gId")
-                ]
-                v
-            )
-            ]
-            (if (> (count point) 1)
-                (.log js/console (format "find same gid in one time: %s" (pr-str row)))
-            )
-            (if (empty? point)
-                [date 0]
-                [date (first point)]
-            )
-        )
-    ))
-)
-
-(defn calc-series [gmeta data]
-    {
-        :series (vec (for [[gid ks] (enumerate gmeta)]
-            {
-                :name (format-gkeys ks) 
-                :data (extract-group-chart-data gid data)
-            }
-        ))
-        :xAxis {
-            :type "datetime"
-        }
-    }
-)
-
-(defn draw-group-chart []
-    (let [dat @data
-        gmeta (get dat "meta")
-        data (get dat "grouptable")
-        config (nested-merge default-config-area
-            (calc-series gmeta data)
-            {
-                :tooltip {
-                    :headerFormat ""
-                    :formatter (fn []
-                        (this-as me
-                            (format "%s 总计%d次" 
-                                (.toLocaleString (js/Date. (.-x me)))
-                                (.-y me)
-                            )
-                        )
-                    )
-                }
-            }
-        )
-        ]
-        (.setOptions js/Highcharts (->js-obj {:global {:useUTC false}}))
-        (.highcharts (js/jQuery "#divContentChart") (->js-obj config))
     )
 )
 
@@ -400,7 +270,6 @@
     (draw-search-count-chart)
     (show-log-list)
     (show-group-table)
-    (draw-group-chart)
     (show-ready)
 )
 
@@ -472,7 +341,6 @@
     (let [subsections {
             :list [(sel1 :#btn_switcher_list) (sel1 :#divContentList)]
             :table [(sel1 :#btn_switcher_table) (sel1 :#divContentTable)]
-            :chart [(sel1 :#btn_switcher_chart) (sel1 :#divContentChart)]
         }
         ]
         (doseq [[k [btn div]] subsections]
@@ -555,9 +423,6 @@
     )
     (dom/listen! (sel1 :#btn_switcher_table) 
         :click (partial show-detail-section :table)
-    )
-    (dom/listen! (sel1 :#btn_switcher_chart) 
-        :click (partial show-detail-section :chart)
     )
 
     (dom/listen! (sel1 :#search_btn)
