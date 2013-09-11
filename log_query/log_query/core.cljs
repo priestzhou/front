@@ -195,13 +195,6 @@
     }
 )
 
-(defn log-yaxis []
-    (if (dom/has-class? (sel1 :#btn_chart_log) "selected")
-        {:yAxis {:type "logarithmic"}}
-        nil
-    )
-)
-
 (defn draw-group-chart []
     (let [dat @data
         gmeta (get dat "meta")
@@ -221,7 +214,6 @@
                     )
                 }
             }
-            (log-yaxis)
         )
         ]
         (.setOptions js/Highcharts (->js-obj {:global {:useUTC false}}))
@@ -495,16 +487,7 @@
                 )
             )
         )
-        (if (= type :chart)
-            (dom/remove-class! (sel1 :#btn_chart_log) "hidden")
-            (dom/add-class! (sel1 :#btn_chart_log) "hidden")
-        )
     )
-)
-
-(defn click-on-logarithmic []
-    (dom/toggle-class! (sel1 :#btn_chart_log) "selected")
-    (draw-group-chart)
 )
 
 (defn click-on-time-picker [evt]
@@ -575,9 +558,6 @@
     )
     (dom/listen! (sel1 :#btn_switcher_chart) 
         :click (partial show-detail-section :chart)
-    )
-    (dom/listen! (sel1 :#btn_chart_log)
-        :click click-on-logarithmic
     )
 
     (dom/listen! (sel1 :#search_btn)
