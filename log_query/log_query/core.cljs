@@ -181,7 +181,6 @@
 
 (defn extract-topics [gmeta]
     (vec (concat 
-        ["timestamp"]
         (sort (into #{}
             (for [x gmeta
                 k (keys (get x "gKeys"))
@@ -200,28 +199,15 @@
     ))
 )
 
-(defn extract-data [topic gmeta event]
-    (cond
-        (contains? event topic) (get event topic)
-        :else (let [gid (get event "gId")
-            gkeys (get (get gmeta gid) "gKeys")
-            ]
-            (if-let [x (get gkeys topic)]
-                x
-                ""
-            )
-        )
-    )
-)
-
 (defn reformat-data [topics gmeta data]
-    (vec (for [row data
-        event (get row "events")
-        ]
-        (vec (cons 
-            (get row "timestamp")
-            (for [topic (rest topics)]
-                (extract-data topic gmeta event)
+    (vec (for [m gmeta]
+        (vec (for [t topics]
+            (if-let [v (get m t)]
+                v
+                (if-let [v (get (get m "gKeys") t)]
+                    v
+                    nil
+                )
             )
         ))
     ))
@@ -243,7 +229,9 @@
         ]
         (when-not (empty? da)
             (let [[topics d] (reformat-group-table gmeta da)]
-                (-> (sel1 (sel1 (sel1 :#divContentTable) :div) :table)
+                (-> (sel1 :#divContentTable)
+                    (sel1 :div)
+                    (sel1 :table)
                     (dom/replace! (format-table topics d))
                 )
             )
