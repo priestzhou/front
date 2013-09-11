@@ -32,6 +32,23 @@ ul {
     font-weight: bold;
 }
 
+section {
+    clear: both;
+    border-radius: 3px;
+    border-color: #CCCCCC;
+    border-style: solid;
+    border-width: 1px;
+    margin: 10px 20px;
+}
+
+#match_section h2 {
+    padding-left: 20px;
+    height: 22px;
+    line-height: 24px;
+    font-size: 13px;
+}
+
+
 .splClearfix:after {
     clear: both;
     content: ".";
@@ -507,16 +524,13 @@ div.layoutRow {
     background-color: #448CCA;
     color: #FFFFFF;
 }
-.VisualObject{
-    min-height:100px;
-}
 
-.eventsNumOk {
+.EventsNumOk {
     background: url("../image/icons_sprite.png") no-repeat scroll 0 -57px transparent;
     height: 22px;
     line-height: 24px;
 }
-.eventsNumLoading {
+.EventsNumLoading {
     background: url("../image/loader.gif") no-repeat;
     height: 22px;
     line-height: 24px;

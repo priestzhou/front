@@ -54,42 +54,7 @@
     :series []
 })
 
-(def data (atom {"meta" [] "grouptable" [] "logtable" []}))
-
-(defn parse-date [date-str]
-    (let [[year month day hour minute sec] (map int (str/split date-str #"[\s-:]"))
-        utc (.UTC js/Date year (dec month) day hour minute sec)
-        ]
-        utc
-    )
-)
-
-(defn draw-search-count-chart []
-    (let [d (get @data "matchchart")
-        yaxis (get d "search-count")
-        xaxis (get d "time-series")
-        config (nested-merge default-config-column 
-            {
-                :series [
-                    {
-                        :data (vec (for [[datetime value] (zip xaxis yaxis)]
-                            [(parse-date datetime) value]
-                        ))
-                    }
-                ]
-                :xAxis {
-                    :type "datetime"
-                }
-            }
-        )
-        ]
-        (.setOptions js/Highcharts (->js-obj {:global {:useUTC false}}))
-        (.highcharts (js/jQuery "#VisualChartDiv") (->js-obj config))
-        (dom/set-text! (sel1 :#matched_count) 
-            (format "%d个匹配事件" (reduce + (get d "search-count")))
-        )
-    )
-)
+(def data (atom {"meta" [] "logtable" []}))
 
 (defn extract-table-data [data]
     [
@@ -240,22 +205,21 @@
 )
 
 (defn show-ready []
-    (-> (sel1 :.events)
-        (dom/remove-class! :eventsNumLoading)
-        (dom/add-class! :eventsNumOk)
+    (-> (sel1 :#matched_count)
+        (dom/remove-class! :EventsNumLoading)
+        (dom/add-class! :EventsNumOk)
     )
 )
 
 (defn show-busy []
-    (-> (sel1 :.events)
-        (dom/remove-class! :eventsNumOk)
-        (dom/add-class! :eventsNumLoading)
+    (-> (sel1 :#matched_count)
+        (dom/remove-class! :EventsNumOk)
+        (dom/add-class! :EventsNumLoading)
     )
 )
 
 (defn refresh [d]
     (reset! data d)
-    (draw-search-count-chart)
     (show-log-list)
     (show-group-table)
     (show-ready)
