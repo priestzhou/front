@@ -402,7 +402,7 @@
 )
 
 (defn ^:export load []
-    (show-detail-section :list)
+    (show-detail-section :table)
 
     (dom/listen! (sel1 :#btn_switcher_list) 
         :click (partial show-detail-section :list)
