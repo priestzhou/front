@@ -54,7 +54,15 @@
     :series []
 })
 
-(def data (atom {"meta" [] "logtable" []}))
+(def data (atom {"meta" [] "matchchart" [] "logtable" []}))
+
+(defn show-search-count []
+    (let [d (get @data "matchchart")]
+        (dom/set-text! (sel1 :#matched_count) 
+            (format "%d个匹配日志" (reduce + (get d "search-count")))
+        )
+    )
+)
 
 (defn extract-table-data [data]
     [
@@ -104,7 +112,7 @@
 )
 
 (defn update-log-list [ks data page page-size]
-    (-> (sel1 (sel1 (sel1 :#divContentList) :div) :table)
+    (-> (sel1 (sel1 :#div_content_list) :table)
         (dom/replace! (format-table ks data page page-size))
     )
 )
@@ -194,7 +202,7 @@
         ]
         (when-not (empty? da)
             (let [[topics d] (reformat-group-table gmeta da)]
-                (-> (sel1 :#divContentTable)
+                (-> (sel1 :#div_content_table)
                     (sel1 :div)
                     (sel1 :table)
                     (dom/replace! (format-table topics d))
@@ -220,6 +228,7 @@
 
 (defn refresh [d]
     (reset! data d)
+    (show-search-count)
     (show-log-list)
     (show-group-table)
     (show-ready)
@@ -277,19 +286,19 @@
 
 (defn show-detail-section [type]
     (let [subsections {
-            :list [(sel1 :#btn_switcher_list) (sel1 :#divContentList)]
-            :table [(sel1 :#btn_switcher_table) (sel1 :#divContentTable)]
+            :list [(sel1 :#btn_switcher_list) (sel1 :#div_content_list)]
+            :table [(sel1 :#btn_switcher_table) (sel1 :#div_content_table)]
         }
         ]
         (doseq [[k [btn div]] subsections]
             (if (= k type)
                 (do
-                    (dom/add-class! btn "selected")
-                    (dom/remove-class! div "hidden")
+                    (dom/add-class! btn "Selected")
+                    (dom/remove-class! div "Hidden")
                 )
                 (do
-                    (dom/remove-class! btn "selected")
-                    (dom/add-class! div "hidden")
+                    (dom/remove-class! btn "Selected")
+                    (dom/add-class! div "Hidden")
                 )
             )
         )
@@ -298,7 +307,7 @@
 
 (defn click-on-time-picker [evt]
     (doto (sel1 :div.timeRangeMenu)
-        (dom/remove-class! "hidden")
+        (dom/remove-class! "Hidden")
     )
     (.stopPropagation evt)
     (.preventDefault evt)
@@ -306,16 +315,16 @@
 
 (defn cancel-time-picker []
     (doto (sel1 :#menu_lvl2)
-        (dom/add-class! "hidden")
+        (dom/add-class! "Hidden")
     )
     (doto (sel1 :div.timeRangeMenu)
-        (dom/add-class! "hidden")
+        (dom/add-class! "Hidden")
     )
 )
 
 (defn click-on-readtime-btn [evt]
     (doto (sel1 :#menu_lvl2)
-        (dom/toggle-class! "hidden")
+        (dom/toggle-class! "Hidden")
     )
     (.stopPropagation evt)
     (.preventDefault evt)

@@ -54,7 +54,7 @@ section {
     list-style-type: none;
     margin: 3px 0 0;
 }
-#btn_switcher > li.selected {
+#btn_switcher > li.Selected {
     background-color: #999999;
     box-shadow: 1px 1px 1px 0 #333333 inset;
 }
@@ -82,6 +82,18 @@ section {
     background-position: -39px -780px;
 }
 
+#details {
+    clear: both;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px 5px 5px 5px;
+    margin: 10px 20px;
+}
+.PageArea {
+    height: 26px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    text-align: right;
+}
 
 .splClearfix:after {
     clear: both;
@@ -481,13 +493,6 @@ div.layoutRow {
     text-align: right;
     vertical-align: middle;
 }
-.page-area {
-    /*border-top: 1px solid #DFDFDF;*/
-    height: 26px;
-    padding-right: 5px;
-    padding-bottom: 5px;
-    text-align: right;
-}
 
 #pagination a.prev, #pagination a.next {
     border: medium none;
@@ -520,6 +525,6 @@ div.layoutRow {
     line-height: 24px;
 }
 
-.hidden {
+.Hidden {
     display: none;
 }

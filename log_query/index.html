@@ -31,29 +31,27 @@
 </section>
 
 <section id="match_section">
-    <h2 id="matched_count">0个匹配事件</h2>
+    <h2 id="matched_count">0个匹配日志</h2>
 </section>
 
 <section>
-    <ul id='btn_switcher'>
-        <li id="btn_switcher_list" class=""><a id="icon_log_list" title="日志列表"></a></li>
-        <li id="btn_switcher_table" class="selected"><a id="icon_result_table" title="查询结果"></a></li>
-    </ul>
-    <div class='searchResultDiv' style="clear:both">
-        <div class='divContent' style="clear:both;padding-top:10px">
-            <div  ID='divContentList'>
-                <div>
-                    <table class='table table-striped' style=''></table>
-                </div>
-                <div class="page-area" id="pagination"></div>
-            </div>
-            <div  ID='divContentTable'>
-                <div>
-                    <table class='table table-striped' style='border-bottom:1px solid #DDDDDD'></table>
-                </div>
+    <header>
+        <ul id='btn_switcher'>
+            <li id="btn_switcher_list" class=""><a id="icon_log_list" title="日志列表"></a></li>
+            <li id="btn_switcher_table" class="Selected"><a id="icon_result_table" title="查询结果"></a></li>
+        </ul>
+    </header>
+    <section id="details">
+        <div  id='div_content_list'>
+            <table class='table table-striped'></table>
+            <div id="pagination" class="PageArea"></div>
+        </div>
+        <div  id='div_content_table'>
+            <div>
+                <table class='table table-striped'></table>
             </div>
         </div>
-    </div>
+    </section>
 </section>
 
 <div id="main_view">
@@ -80,16 +78,16 @@
                                 <a class="timeRangeActivatorWrapper splBorder splBorder-nsew splBackground-primary" href="#">
                                     <span class="splIcon splIcon-triangle-4-s dropDown">下拉</span>
                                     <span id="time_range_activator" class="timeRangeActivator">1分钟</span>
-                                    <input type="hidden" id="time_range_picker" value='60'/>
+                                    <input type="Hidden" id="time_range_picker" value='60'/>
                                 </a>
                             </div>
-                            <div class="hidden outerMenuWrapper splShadow splMenu splMenu-primary timeRangeMenu" style="top: 25px; left: 0px;">
+                            <div class="Hidden outerMenuWrapper splShadow splMenu splMenu-primary timeRangeMenu" style="top: 25px; left: 0px;">
                             <ul>
                                 <div class="innerMenuWrapper">
                                 <li class="hasSubMenu sfhover">
                                     <a id="realtime_btn" href="javascript:void(0);" tabindex="-1" class="menuItemLink">实时</a>
                                     <span class="splIcon splIcon-triangle-4-e dropDown">Submenu</span>
-                                    <div id="menu_lvl2" class="hidden outerMenuWrapper splShadow" style="left: -162px;top:0px;">
+                                    <div id="menu_lvl2" class="Hidden outerMenuWrapper splShadow" style="left: -162px;top:0px;">
                                         <ul>
                                         <div class="innerMenuWrapper">
                                         <li class="timeRangePreset"><a id="realtime_1min" href="javascript:void(0);" tabindex="-1" class="menuItemLink" earliest_time="60" latest_time="rt">1 分钟窗口</a></li>
