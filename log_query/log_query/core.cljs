@@ -252,12 +252,6 @@
     })
 )
 
-(defn get-time-range []
-    (-> (sel1 :#time_range_picker)
-        (dom/value)
-    )
-)
-
 (defn get-keywords []
     (-> (sel1 :#SearchBar_0_0_0_id)
         (dom/value)
@@ -266,13 +260,11 @@
 
 (defn request-search []
     (show-busy)
-    (let [time-range (get-time-range)
+    (let [
         keywords (get-keywords)
-        interval (if (= time-range 60) 5000 10000)
         ]
         (ajax/POST (ajax/uri-with-params "/query/create" {
                 :query keywords 
-                :timewindow time-range
             }) {
             :handler (fn [response]
                 (when-let [qid (get response "query-id")]
@@ -305,63 +297,6 @@
     )
 )
 
-(defn click-on-time-picker [evt]
-    (doto (sel1 :div.timeRangeMenu)
-        (dom/remove-class! "Hidden")
-    )
-    (.stopPropagation evt)
-    (.preventDefault evt)
-)
-
-(defn cancel-time-picker []
-    (doto (sel1 :#menu_lvl2)
-        (dom/add-class! "Hidden")
-    )
-    (doto (sel1 :div.timeRangeMenu)
-        (dom/add-class! "Hidden")
-    )
-)
-
-(defn click-on-readtime-btn [evt]
-    (doto (sel1 :#menu_lvl2)
-        (dom/toggle-class! "Hidden")
-    )
-    (.stopPropagation evt)
-    (.preventDefault evt)
-)
-
-(defn highlight-choices [ev]
-    (doto (.-target ev)
-        (dom/add-class! "splMenuMouseOver")
-    )
-)
-
-(defn unhighlight-choices [ev]
-    (doto (.-target ev)
-        (dom/remove-class! "splMenuMouseOver")
-    )
-)
-
-(defn all-time-picker-li []
-    (vec (for [div (sel :div.outerMenuWrapper)
-        :let [ul (sel1 div :ul)]
-        li (sel ul :li)
-        ]
-        li
-    ))
-)
-
-(defn select-time-range [time-range]
-    (doto (sel1 :#time_range_picker)
-        (dom/set-value! time-range)
-    )
-    (case time-range
-        60 (dom/set-text! (sel1 :#time_range_activator) "1分钟")
-        300 (dom/set-text! (sel1 :#time_range_activator) "5分钟")
-        (.log js/console (format "unknown time range: %d" time-range))
-    )
-)
-
 (defn ^:export load []
     (show-detail-section :table)
 
@@ -374,27 +309,5 @@
 
     (dom/listen! (sel1 :#search_btn)
         :click request_search
-    )
-
-    (dom/listen! (sel1 :#TimeRangePicker_0_1_0)
-        :click click-on-time-picker
-    )
-    (dom/listen! (sel1 :body)
-        :click cancel-time-picker
-    )
-    (dom/listen! (sel1 :#realtime_btn)
-        :click click-on-readtime-btn
-    )
-    (doseq [x (all-time-picker-li)]
-        (dom/listen! x
-            :mouseover highlight-choices
-            :mouseout unhighlight-choices
-        )
-    )
-    (dom/listen! (sel1 :#realtime_1min)
-        :click (partial select-time-range 60)
-    )
-    (dom/listen! (sel1 :#realtime_5min)
-        :click (partial select-time-range 300)
     )
 )
