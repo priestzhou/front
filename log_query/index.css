@@ -41,7 +41,7 @@ section {
     margin: 10px 20px;
 }
 
-#search_bar div.splSearchControls-inline, .splView-flashtimeline div.splSearchControls-inline {
+#search_bar div.splSearchControls-inline {
     background: none repeat scroll 0 0 white;
     margin: 0 20px;
     padding: 20px 10px 0;
@@ -107,11 +107,6 @@ section {
     display: block;
     height: 0;
     visibility: hidden;
-}
-#main_view div.splSearchControls-inline, .splView-flashtimeline div.splSearchControls-inline {
-    background: none repeat scroll 0 0 white;
-    margin: 0 20px;
-    padding: 20px 10px 0;
 }
 div.splSearchControls-inline {
     -moz-border-bottom-colors: none;
@@ -196,22 +191,7 @@ table.mainSearchControlsTable .SearchBar .searchFieldWrapper {
     border-top-right-radius: 0;
     border-width: 1px 0 1px 1px;
 }
-table.mainSearchControlsTable .TimeRangePicker .timeRangeActivatorWrapper {
-    -moz-border-bottom-colors: none;
-    -moz-border-left-colors: none;
-    -moz-border-right-colors: none;
-    -moz-border-top-colors: none;
-    background: url("../image/search_bar.png") repeat scroll 0 0 #659C40;
-    border-color: #5E8D3D;
-    border-image: none;
-    border-radius: 0 0 0 0;
-    border-style: solid;
-    border-width: 1px 1px 1px 0;
-    color: #FFFFFF;
-    font-size: 12px;
-    height: 26px;
-}
-.splButton-primary, .TimeRangePicker .timeRangeActivatorWrapper {
+.splButton-primary {
     background-attachment: scroll;
     background-clip: border-box;
     background-color: #2D65A1 !important;
@@ -224,26 +204,6 @@ table.mainSearchControlsTable .TimeRangePicker .timeRangeActivatorWrapper {
     color: #FFFFFF !important;
 }
 
-table.mainSearchControlsTable .TimeRangePicker .timeRangeActivatorWrapper .dropDown {
-    background-position: -27px -367px;
-    margin-top: 11px;
-}
-.TimeRangePicker .timeRangeActivatorWrapper span.splIcon-triangle-4-s {
-    float: right;
-    margin: 8px -3px 0 0;
-}
-
-table.mainSearchControlsTable .TimeRangePicker .timeRangeActivator {
-    padding-top: 3px;
-}
-.TimeRangePicker .timeRangeActivator {
-    cursor: pointer;
-    display: block;
-    margin-right: 8px;
-    padding: 0 0 0 10px;
-    text-decoration: none;
-    white-space: nowrap;
-}
 .splIcon-triangle, .splIcon-triangle-1-n, .splIcon-triangle-1-s, .splIcon-triangle-1-e, .splIcon-triangle-1-w, .splIcon-triangle-2-n, .splIcon-triangle-2-s, .splIcon-triangle-2-e, .splIcon-triangle-2-w, .splIcon-triangle-3-n, .splIcon-triangle-3-s, .splIcon-triangle-3-e, .splIcon-triangle-3-w, .splIcon-triangle-4-n, .splIcon-triangle-4-s, .splIcon-triangle-4-e, .splIcon-triangle-4-w, .splIcon-triangle-5-n, .splIcon-triangle-5-s, .splIcon-triangle-5-e, .splIcon-triangle-5-w {
     height: 5px;
     width: 5px;
@@ -270,24 +230,8 @@ table.mainSearchControlsTable .TimeRangePicker .timeRangeActivator {
     height: 13px;
     width: 13px;
 }
-table.mainSearchControlsTable .TimeRangePicker .timeRangeActivatorWrapper {
-    color: #FFFFFF;
-    font-size: 12px;
-}
-.splButton-primary, .TimeRangePicker .timeRangeActivatorWrapper {
+.splButton-primary {
     color: #FFFFFF !important;
-}
-.TimeRangePicker .timeRangeActivatorWrapper {
-    color: #000000;
-    line-height: 21px;
-}
-.TimeRangePicker .timeRangeActivatorWrapper {
-    color: #000000;
-    display: inline-block;
-    line-height: 21px;
-    min-width: 100px;
-    outline: medium none;
-    padding-right: 15px;
 }
 table.mainSearchControlsTable .SearchBar .searchFieldWrapper, .SearchBar .searchFieldWrapperInner {
     border-color: #2D65A1;
@@ -304,11 +248,6 @@ table.mainSearchControlsTable .SearchBar .searchFieldWrapper {
 body, td {
     color: #333333;
     font-size: 13px;
-    line-height: 150%;
-}
-body, td, .eaiResultsPerPage label {
-    color: #333333;
-    font-size: 13px !important;
     line-height: 150%;
 }
 fieldset {
@@ -459,40 +398,8 @@ input.searchButton {
     height: 0;
     visibility: hidden;
 }
-.layoutRow.graphArea {
-    -moz-border-bottom-colors: none;
-    -moz-border-left-colors: none;
-    -moz-border-right-colors: none;
-    -moz-border-top-colors: none;
-    background: none repeat scroll 0 0 white;
-    border-color: -moz-use-text-color #CCCCCC #CCCCCC;
-    border-image: none;
-    border-radius: 0 0 5px 5px;
-    border-right: 1px solid #CCCCCC;
-    border-style: none solid solid;
-    border-width: medium 1px 1px;
-    margin: 0 20px;
-}
 div.layoutRow {
     clear: both;
-}
-.eventsDiv{
-    height: 28px;
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-    margin: 0;
-    padding: 5px;
-}
-.eventsDiv h2{
-    padding-left: 20px;
-    height: 22px;
-    line-height: 24px;
-    font-size: 13px;
-}
-.searchResultDiv{
-     border: 1px solid #CCCCCC;
-     border-radius: 5px 5px 5px 5px;
-     margin: 10px 20px;
 }
 
 #pagination {
