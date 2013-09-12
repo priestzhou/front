@@ -203,7 +203,6 @@
         (when-not (empty? da)
             (let [[topics d] (reformat-group-table gmeta da)]
                 (-> (sel1 :#div_content_table)
-                    (sel1 :div)
                     (sel1 :table)
                     (dom/replace! (format-table topics d))
                 )
@@ -253,7 +252,7 @@
 )
 
 (defn get-keywords []
-    (-> (sel1 :#SearchBar_0_0_0_id)
+    (-> (sel1 :#search_bar)
         (dom/value)
     )
 )
@@ -286,11 +285,11 @@
             (if (= k type)
                 (do
                     (dom/add-class! btn "Selected")
-                    (dom/remove-class! div "Hidden")
+                    (dom/remove-attr! div :hidden)
                 )
                 (do
                     (dom/remove-class! btn "Selected")
-                    (dom/add-class! div "Hidden")
+                    (dom/set-attr! div :hidden)
                 )
             )
         )

@@ -26,32 +26,12 @@
     </ul>
 </nav>
 
-<section id="search_bar">
+<section id="query_zone">
     <div class="row-fluid">
         <div class="span12">
-            <div class="layoutRow oneColRow splClearfix splSearchControls-inline">
-                <table cellspacing="0" class="mainSearchControlsTable"><tbody><tr>
-                    <td width="100%">
-                        <div id="SearchBar_0_0_0" class="SplunkModule SearchBar">
-                        <fieldset>
-                            <div class="searchFieldWrapper hasAssistant">
-                                <label for="SearchBar_0_0_0_id" style="display: none;">搜索</label>
-                                <div class="searchFieldWrapperInner">
-                                    <textarea id="SearchBar_0_0_0_id" class="splFont-mono visibleSearchBar" style="line-height: 16px; margin-top: 0px;" spellcheck="false" name="q" value="cmd sourcetype=&quot;hadoop&quot; dst=&quot;*&quot; | timechart count by host"></textarea>
-                                </div>
-                            </div>
-                        </fieldset>
-                        </div>
-                    </td>
-
-                    <td>
-                        <div id="SubmitButton_0_2_0" class="SplunkModule SubmitButton">
-                        <fieldset>
-                            <input type="submit" title="Search" id="search_btn" class="searchButton" value="" />
-                        </fieldset>
-                        </div>
-                    </td>
-                </tr></tbody></table>
+            <div>
+                <textarea id="search_bar" spellcheck=false class="span11"></textarea>
+                <input type="submit" id="search_btn" value="" class="span1"></input>
             </div>
         </div>
     </div>
@@ -73,10 +53,8 @@
             <table class='table table-striped'></table>
             <div id="pagination" class="PageArea"></div>
         </div>
-        <div  id='div_content_table'>
-            <div>
-                <table class='table table-striped'></table>
-            </div>
+        <div id='div_content_table'>
+            <table class='table table-striped'></table>
         </div>
     </section>
 </section>
