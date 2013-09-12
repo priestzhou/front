@@ -50,20 +50,15 @@ section {
 
 #btn_switcher {
     clear:both;
-    padding-left:10px;
-    padding-top:5px
-}
-#btn_switcher ul {
-    float: left;
-    list-style: none outside none;
+    padding: 0 10px 20px;
+    list-style-type: none;
     margin: 3px 0 0;
-    padding: 0;
 }
-#btn_switcher ul li.selected, #btn_switcher ul li.selected:hover {
+#btn_switcher > li.selected {
     background-color: #999999;
     box-shadow: 1px 1px 1px 0 #333333 inset;
 }
-#btn_switcher ul li {
+#btn_switcher > li {
     float: left;
     height: 19px;
     margin-right: 2px;
@@ -71,21 +66,22 @@ section {
     border-color: #FFFFFF;
     border-radius: 3px 3px 3px 3px;
 }
-#btn_switcher ul li.selected .splIcon-events-list {
-    background-position: 0 -740px;
-}
-#btn_switcher ul li.selected, #btn_switcher ul li.selected:hover {
-    background-color: #999999;
-    box-shadow: 1px 1px 1px 0 #333333 inset;
-}
-#btn_switcher ul li.selected, #btn_switcher ul li.selected:hover {
-    background-color: #999999;
-    box-shadow: 1px 1px 1px 0 #333333 inset;
-}
-#btn_switcher ul li a {
+#btn_switcher > li > a {
     cursor: pointer;
     display: block;
+    height: 13px;
+    margin: 3px;
+    width: 13px;
+    background-image: url("../image/sprite_button_icons.png");
+    background-repeat: no-repeat;
 }
+#icon_log_list {
+    background-position: -39px -740px;
+}
+#icon_result_table {
+    background-position: -39px -780px;
+}
+
 
 .splClearfix:after {
     clear: both;
@@ -479,56 +475,6 @@ div.layoutRow {
      border: 1px solid #CCCCCC;
      border-radius: 5px 5px 5px 5px;
      margin: 10px 20px;
-}
-
-.ButtonSwitcher ul {
-    float: left;
-    list-style: none outside none;
-    margin: 3px 0 0;
-    padding: 0;
-}
-.ButtonSwitcher ul li.selected, .ButtonSwitcher ul li.selected:hover {
-    background-color: #999999;
-    box-shadow: 1px 1px 1px 0 #333333 inset;
-}
-.ButtonSwitcher ul li {
-    float: left;
-    height: 19px;
-    margin-right: 2px;
-    width: 19px;
-    border-color: #FFFFFF;
-    border-radius: 3px 3px 3px 3px;
-}
-
-.ButtonSwitcher ul li.selected .splIcon-events-list {
-    background-position: 0 -740px;
-}
-.ButtonSwitcher ul li.selected, .ButtonSwitcher ul li.selected:hover {
-    background-color: #999999;
-    box-shadow: 1px 1px 1px 0 #333333 inset;
-}
-.ButtonSwitcher ul li.selected, .ButtonSwitcher ul li.selected:hover {
-    background-color: #999999;
-    box-shadow: 1px 1px 1px 0 #333333 inset;
-}
-.splIcon-results-table {
-    background-position: -39px -780px;
-}
-.splIcon-events-list {
-    background-position: -39px -740px;
-}
-.ButtonSwitcher ul li a {
-    cursor: pointer;
-    display: block;
-}
-.splIcon-events-list, .splIcon-events-table, .splIcon-results-table, .splIconicLinkIcon, .splButtonIcon, span.splMenuIcon {
-    background-image: url("../image/sprite_button_icons.png");
-}
-.splIcon-events-list, .splIcon-events-table, .splIcon-results-table {
-    background-repeat: no-repeat;
-    height: 13px;
-    margin: 3px;
-    width: 13px;
 }
 
 #pagination {
