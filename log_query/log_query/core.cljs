@@ -351,14 +351,6 @@
     )
 )
 
-(defn on-start-time-change [cal hhmm]
-    (on-time-change :#start_time cal hhmm)
-)
-
-(defn on-end-time-change [cal hhmm]
-    (on-time-change :#end_time cal hhmm)
-)
-
 (defn on-date-change [inp cal date]
     (if-let [v (dom/value (sel1 inp))]
         (let [[_ _ _ hour minute sec] (parse-datetime v)
@@ -371,14 +363,6 @@
             )
         )
     )
-)
-
-(defn on-start-date-change [cal date]
-    (on-date-change :#start_time cal date)
-)
-
-(defn on-end-date-change [cal date]
-    (on-date-change :#end_time cal date)
 )
 
 (defn ^:export load []
@@ -401,4 +385,21 @@
     (dom/listen! (sel1 :#search_btn)
         :click request-search
     )
+
+    (Calendar/setup (->js-obj {
+        :inputField "start_time"
+        :trigger "start_time"
+        :showTime true
+        :dateFormat "%Y-%m-%dT%H:%M:%S"
+        :onChange (partial on-date-change :#start_time)
+        :onTimeChange (partial on-time-change :#start_time)
+    }))
+    (Calendar/setup (->js-obj {
+        :inputField "end_time"
+        :trigger "end_time"
+        :showTime true
+        :dateFormat "%Y-%m-%dT%H:%M:%S"
+        :onChange (partial on-date-change :#end_time)
+        :onTimeChange (partial on-time-change :#end_time)
+    }))
 )
