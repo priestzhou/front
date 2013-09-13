@@ -43,6 +43,11 @@ section#query_zone > div {
     margin-top: 3px;
     margin-bottom: 3px;
 }
+section#query_zone > div > div:first-child > div:first-child, 
+section#query_zone > div > div:first-child > div:nth-child(3) {
+    text-align: right;
+}
+
 textarea#search_bar {
     line-height: 16px; 
     height: 16px;
