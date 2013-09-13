@@ -13,54 +13,14 @@
     )
 )
 
-(def default-config-column {
-    :chart {
-        :type "column"
-        :height 100
-        :animation false
-    }
-    :credits {
-        :enabled false
-    }
-    :title { 
-        :text ""
-    }
-    :subtitle { 
-        :text "" 
-    }
-    :legend false
-    :xAxis { 
-        :title {
-            :text ""
-        }
-    }
-    :yAxis {
-        :min 0
-        :title {
-            :text ""
-        }
-    }
-    :tooltip {
-        :pointFormat "{point.y:,.0f}"
-        :headerFormat ""
-    }
-    :plotOptions {
-        :column {
-            :animation false
-            :pointWidth 15
-            :pointPadding 0.2
-        }
-    }
-    :series []
-})
-
-(def data (atom {"meta" [] "matchchart" [] "logtable" []}))
+(def data (atom {}))
 
 (defn show-search-count []
-    (let [d (get @data "matchchart")]
+    (if-let [d (get @data "total")]
         (dom/set-text! (sel1 :#matched_count) 
-            (format "%d个匹配日志" (reduce + (get d "search-count")))
+            (format "%d个匹配日志" d)
         )
+        (.log js/console "total number of logs is missing.")
     )
 )
 
@@ -172,7 +132,7 @@
     ))
 )
 
-(defn reformat-data [topics gmeta data]
+(defn reformat-data [topics gmeta]
     (vec (for [m gmeta]
         (vec (for [t topics]
             (if-let [v (get m t)]
@@ -186,26 +146,23 @@
     ))
 )
 
-(defn reformat-group-table [gmeta data]
+(defn reformat-group-table [gmeta]
     (let [topics (extract-topics gmeta)]
         [
             topics
-            (reformat-data topics gmeta data)
+            (reformat-data topics gmeta)
         ]
     )
 )
 
 (defn show-group-table []
     (let [dat @data
-        gmeta (get dat "meta")
-        da (get dat "grouptable")
+        gmeta (get dat "results")
         ]
-        (when-not (empty? da)
-            (let [[topics d] (reformat-group-table gmeta da)]
-                (-> (sel1 :#div_content_table)
-                    (sel1 :table)
-                    (dom/replace! (format-table topics d))
-                )
+        (let [[topics d] (reformat-group-table gmeta)]
+            (-> (sel1 :#div_content_table)
+                (sel1 :table)
+                (dom/replace! (format-table topics d))
             )
         )
     )
@@ -225,45 +182,54 @@
     )
 )
 
-(defn refresh [d]
-    (reset! data d)
-    (show-search-count)
-    (show-log-list)
+(defn fetch-result-succeed [response]
+    (swap! data merge response)
     (show-group-table)
-    (show-ready)
+    (when (= (count @data) 3)
+        (show-ready)
+    )
 )
 
-(defn fetch-log-update-succeed [response]
-    (refresh response)
+(defn fetch-log-succeed [response]
+    (swap! data merge response)
+    (show-log-list)
+    (show-search-count)
+    (when (= (count @data) 3)
+        (show-ready)
+    )
 )
 
 (defn on-error [{:keys [status status-text]}]
     (.log js/console (format "fetch updates error: %d %s " status status-text))
 )
 
-(defn update-tables [id]
-    (ajax/GET (ajax/uri-with-params "/query/get" {
+(defn fetch-results [id]
+    (ajax/GET (ajax/uri-with-params "/query/result" {
             "query-id" id
-            "timestamp" (.now js/Date)
         }) {
-        :handler fetch-log-update-succeed
+        :handler fetch-result-succeed
+        :error-handler on-error
+    })
+    (ajax/GET (ajax/uri-with-params "/query/log" {
+            "query-id" id
+        }) {
+        :handler fetch-log-succeed
         :error-handler on-error
     })
 )
 
 (defn get-time [ctrl]
     (try
-    (let [
-        utc-str (-> ctrl
-            (sel1)
-            (dom/value)
-            (js/Date.)
-            (.toISOString)
+        (let [
+            utc-str (-> ctrl
+                (sel1)
+                (dom/value)
+                (js/Date.)
+                (.toISOString)
+            )
+            ]
+            utc-str
         )
-        ]
-        (.log js/console utc-str)
-        utc-str
-    )
     (catch js/RangeError ex
         (-> ctrl
             (name)
@@ -291,7 +257,7 @@
             }) {
             :handler (fn [response]
                 (when-let [qid (get response "query-id")]
-                    (update-tables qid)
+                    (fetch-results qid)
                 )
             )
             :error-handler on-error
@@ -329,7 +295,7 @@
         sec (.getSeconds datetime)
         ]
         (dom/set-value! (sel1 ctrl) 
-            (format "%4d-%2d-%2dT%2d:%2d:%2d" year month day hour minute sec)
+            (format "%04d-%02d-%02dT%02d:%02d:%02d" year month day hour minute sec)
         )
     )
 )
@@ -342,7 +308,7 @@
         (set-time :#start_time start-time)
         (set-time :#end_time end-time)
     )
-    (show-detail-section :table)
+    (show-detail-section :list)
 
     (dom/listen! (sel1 :#btn_switcher_list) 
         :click (partial show-detail-section :list)
@@ -352,6 +318,6 @@
     )
 
     (dom/listen! (sel1 :#search_btn)
-        :click request_search
+        :click request-search
     )
 )

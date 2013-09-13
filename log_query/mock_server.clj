@@ -23,82 +23,23 @@
     )
 )
 
-(defn get-for-updating [req]
+(defn get-log-samples [req]
     (when (and
             (= (:request-method req) :get)
-            (= (:uri req) "/query/get")
+            (= (:uri req) "/query/log")
         )
-        (println "get-for-updating")
+        (println "get-log-samples")
         (prn req)
-        {:status 202
+        (Thread/sleep (rand-int 5000))
+        {
+            :status 200
             :headers {
                 "Access-Control-Allow-Origin" "*"
                 "content-type" "application/json"
             }
             :body "
 {
-    \"matchchart\": {
-        \"time-series\": [\"2013-08-09 00:00:00\", \"2013-08-09 00:01:00\", \"2013-08-09 00:02:00\", \"2013-08-09 00:03:00\", \"2013-08-09 00:04:00\", \"2013-08-09 00:05:00\", \"2013-08-09 00:06:00\", \"2013-08-09 00:07:00\", \"2013-08-09 00:08:00\", \"2013-08-09 00:09:00\", \"2013-08-09 00:10:00\", \"2013-08-09 00:11:00\", \"2013-08-09 00:12:00\", \"2013-08-09 00:13:00\", \"2013-08-09 00:14:00\", \"2013-08-09 00:15:00\", \"2013-08-09 00:16:00\", \"2013-08-09 00:17:00\", \"2013-08-09 00:18:00\", \"2013-08-09 00:19:00\", \"2013-08-09 00:20:00\", \"2013-08-09 00:21:00\", \"2013-08-09 00:22:00\", \"2013-08-09 00:23:00\", \"2013-08-09 00:24:00\", \"2013-08-09 00:25:00\", \"2013-08-09 00:26:00\", \"2013-08-09 00:27:00\", \"2013-08-09 00:28:00\", \"2013-08-09 00:29:00\"],
-        \"search-count\": [75, 81, 91, 71, 61, 9, 89, 69, 93, 36, 74, 47, 12, 12, 41, 90, 49, 55, 60, 10, 9, 25, 16, 11, 28, 40, 71, 44, 9, 80]
-    },
-    \"meta\": [
-        {
-            \"count_id_1\": 100, 
-            \"gKeys\": {
-                \"level\": \"INFO\",
-                \"ip\": \"192.168.1.1\"
-            }
-        },
-        {
-            \"count_id_1\": 200, 
-            \"gKeys\": {
-                \"level\": \"DEBUG\",
-                \"ip\": \"192.168.1.100\"
-            }
-        },
-        {
-            \"sum_id_1\": 300, 
-            \"gKeys\": {
-                \"level\": \"INFO\",
-                \"ip\": \"192.168.1.1\"
-            }
-        },
-        {
-            \"sum_id_1\": 400, 
-            \"gKeys\": {
-                \"level\": \"DEBUG\",
-                \"ip\": \"192.168.1.100\"
-            }
-        }
-    ], 
-    \"grouptable\": [
-        {
-            \"timestamp\": \"2013-08-09 00:28:00\",
-            \"events\": [
-                {
-                    \"gId\": 0,
-                    \"count_id_1\": 41
-                },
-                {
-                    \"gId\": 1,
-                    \"count_id_1\": 1
-                }    
-            ]
-        },
-        {
-            \"timestamp\": \"2013-08-09 00:29:00\",
-            \"events\": [
-                {
-                    \"gId\": 0,
-                    \"count_id_1\": 93
-                },
-                {
-                    \"gId\": 1,
-                    \"count_id_1\": 3
-                }    
-            ]
-        }
-    ], 
+    \"total\": 54321,
     \"logtable\": {
         \"header\": [\"timestamp\", \"level\", \"location\", \"id_1\", \"message\"],
         \"data\": [
@@ -173,6 +114,58 @@
     )
 )
 
+(defn get-result [req]
+    (when (and
+            (= (:request-method req) :get)
+            (= (:uri req) "/query/result")
+        )
+        (println "get-result")
+        (prn req)
+        (Thread/sleep (rand-int 5000))
+        {
+            :status 200
+            :headers {
+                "Access-Control-Allow-Origin" "*"
+                "content-type" "application/json"
+            }
+            :body "
+{
+    \"results\": [
+        {
+            \"count_id_1\": 100, 
+            \"gKeys\": {
+                \"level\": \"INFO\",
+                \"ip\": \"192.168.1.1\"
+            }
+        },
+        {
+            \"count_id_1\": 200, 
+            \"gKeys\": {
+                \"level\": \"DEBUG\",
+                \"ip\": \"192.168.1.100\"
+            }
+        },
+        {
+            \"sum_id_1\": 300, 
+            \"gKeys\": {
+                \"level\": \"INFO\",
+                \"ip\": \"192.168.1.1\"
+            }
+        },
+        {
+            \"sum_id_1\": 400, 
+            \"gKeys\": {
+                \"level\": \"DEBUG\",
+                \"ip\": \"192.168.1.100\"
+            }
+        }
+    ]
+}
+"
+        }
+    )
+)
+
 (defn -main [& args]
     (web/start-jetty {:port 12345 :join? true}
         (web/handle-static-files {
@@ -204,6 +197,7 @@
             "/js/log_query.js" "@/resources/js/log_query.js"
         })
         post-for-queryid
-        get-for-updating
+        get-log-samples
+        get-result
     )
 )
