@@ -70,18 +70,22 @@
 
 <script type="application/javascript">
 Calendar.setup({
-    inputField : "start_time",
-    trigger    : "start_time",
-    onSelect   : function() { this.hide() },
-    showTime   : 24,
-    dateFormat : "%Y-%m-%dT%H:%M:%S"
+    inputField: "start_time",
+    trigger: "start_time",
+    showTime: true,
+    dateFormat: "%Y-%m-%dT%H:%M:%S",
+    onSelect: function() { this.hide() },
+    onChange: log_query.core.on_start_date_change,
+    onTimeChange: log_query.core.on_start_time_change
 });
 Calendar.setup({
-    inputField : "end_time",
-    trigger    : "end_time",
-    onSelect   : function() { this.hide() },
-    showTime   : 24,
-    dateFormat : "%Y-%m-%dT%H:%M:%S"
+    inputField: "end_time",
+    trigger: "end_time",
+    showTime: true,
+    dateFormat: "%Y-%m-%dT%H:%M:%S",
+    onSelect: function() { this.hide() },
+    onChange: log_query.core.on_end_date_change,
+    onTimeChange: log_query.core.on_end_time_change
 });
 </script>
 </body>

@@ -286,18 +286,97 @@
     )
 )
 
+(defn format-datetime [year month day hour minute sec]
+    (format "%04d-%02d-%02dT%02d:%02d:%02d" year month day hour minute sec)
+)
+
 (defn set-time [ctrl datetime]
     (let [year (.getFullYear datetime)
         month (inc (.getMonth datetime))
         day (.getDate datetime)
         hour (.getHours datetime)
         minute (.getMinutes datetime)
-        sec (.getSeconds datetime)
+        sec 0
         ]
         (dom/set-value! (sel1 ctrl) 
-            (format "%04d-%02d-%02dT%02d:%02d:%02d" year month day hour minute sec)
+            (format-datetime year month day hour minute sec)
         )
     )
+)
+
+(defn ->int' [s i]
+    (if (empty? s)
+        i
+        (let [[x & xs] s]
+            (case x
+                \0 (recur xs (* i 10))
+                \1 (recur xs (+ (* i 10) 1))
+                \2 (recur xs (+ (* i 10) 2))
+                \3 (recur xs (+ (* i 10) 3))
+                \4 (recur xs (+ (* i 10) 4))
+                \5 (recur xs (+ (* i 10) 5))
+                \6 (recur xs (+ (* i 10) 6))
+                \7 (recur xs (+ (* i 10) 7))
+                \8 (recur xs (+ (* i 10) 8))
+                \9 (recur xs (+ (* i 10) 9))
+            )
+        )
+    )
+)
+
+(defn ->int [s]
+    (->int' s 0)
+)
+
+(def datetime-pattern #"(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})")
+
+(defn parse-datetime [datetime-str]
+    (if-let [m (re-find datetime-pattern datetime-str)]
+        (map ->int (rest m))
+    )
+)
+
+(defn on-time-change [inp cal hhmm]
+    (if-let [v (dom/value (sel1 inp))]
+        (let [[year month day _ _ sec] (parse-datetime v)
+            hour (quot hhmm 100)
+            minute (rem hhmm 100)
+            ]
+            (dom/set-value! (sel1 inp)
+                (format-datetime year month day hour minute sec)
+            )
+        )
+    )
+)
+
+(defn on-start-time-change [cal hhmm]
+    (on-time-change :#start_time cal hhmm)
+)
+
+(defn on-end-time-change [cal hhmm]
+    (on-time-change :#end_time cal hhmm)
+)
+
+(defn on-date-change [inp cal date]
+    (if-let [v (dom/value (sel1 inp))]
+        (let [[_ _ _ hour minute sec] (parse-datetime v)
+            year (.getFullYear date)
+            month (+ (.getMonth date) 1)
+            day (.getDate date)
+            ]
+            (dom/set-value! (sel1 inp)
+                (format-datetime year month day hour minute sec)
+            )
+        )
+    )
+)
+
+(defn on-start-date-change [cal date]
+    (on-date-change :#start_time cal date)
+)
+
+(defn on-end-date-change [cal date]
+    (on-date-change :#end_time cal date)
 )
 
 (defn ^:export load []
