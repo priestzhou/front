@@ -83,7 +83,7 @@ lq_js = env.compileJs('log_query.js', 'log_query',
     libs=[env.File('$BUILD_DIR/jsutilities.jar'),
         env.File('$EXTLIB/cljs-ajax-0.1.6.jar'),
     ],
-    options={":optimizations": ":simple", ":pretty-print": True,
+    options={":optimizations": ":advanced",
         ":externs": ["\"%s\"" % (env.File('resources/js/goog.extern.js').abspath),
         ],
     }

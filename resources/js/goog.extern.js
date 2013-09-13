@@ -10,3 +10,5 @@ me.point = {};
 me.point.category = {};
 me.point.y = {};
 
+var Calendar = {};
+Calendar.setup = {};
