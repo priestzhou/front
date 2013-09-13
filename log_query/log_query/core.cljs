@@ -114,28 +114,27 @@
 
 (defn extract-topics [gmeta]
     (vec (concat 
-        (sort (into #{}
+        (into (sorted-set)
             (for [x gmeta
                 k (keys (get x "gKeys"))
                 ]
                 k
             )
-        ))
-        (sort (into #{}
+        )
+        (into (sorted-set)
             (for [x gmeta
-                k (keys x)
-                :when (not= k "gKeys")
+                k (keys (get x "gValues"))
                 ]
                 k
             )
-        ))
+        )
     ))
 )
 
 (defn reformat-data [topics gmeta]
     (vec (for [m gmeta]
         (vec (for [t topics]
-            (if-let [v (get m t)]
+            (if-let [v (get (get m "gValues") t)]
                 v
                 (if-let [v (get (get m "gKeys") t)]
                     v
