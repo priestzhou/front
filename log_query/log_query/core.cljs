@@ -219,15 +219,11 @@
 
 (defn get-time [ctrl]
     (try
-        (let [
-            utc-str (-> ctrl
-                (sel1)
-                (dom/value)
-                (js/Date.)
-                (.toISOString)
-            )
-            ]
-            utc-str
+        (-> ctrl
+            (sel1)
+            (dom/value)
+            (js/Date.)
+            (.getTime)
         )
     (catch js/RangeError ex
         (-> ctrl
@@ -250,17 +246,24 @@
         end-time (get-time :#end_time)
         keywords (get-keywords)
         ]
-        (show-busy)
-        (ajax/POST (ajax/uri-with-params "/query/create" {
-                :query keywords 
-            }) {
-            :handler (fn [response]
-                (when-let [qid (get response "query-id")]
-                    (fetch-results qid)
-                )
+        (if (>= start-time end-time)
+            (.log js/console "start must be less than end")
+            (do
+                (show-busy)
+                (ajax/POST (ajax/uri-with-params "/query/create" {
+                        :query keywords 
+                        :start start-time
+                        :end end-time
+                    }) {
+                    :handler (fn [response]
+                        (when-let [qid (get response "query-id")]
+                            (fetch-results qid)
+                        )
+                    )
+                    :error-handler on-error
+                })
             )
-            :error-handler on-error
-        })
+        )
     )
 )
 
