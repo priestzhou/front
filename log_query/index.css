@@ -37,14 +37,10 @@ section {
     margin: 10px 20px;
 }
 
-section#query_zone > div > div > div {
+section#query_zone > div {
     margin-left: 10px;
     margin-right: 10px;
-}
-section#query_zone > div > div > div:first-child {
     margin-top: 3px;
-}
-section#query_zone > div > div > div:last-child {
     margin-bottom: 3px;
 }
 textarea#search_bar {

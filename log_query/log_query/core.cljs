@@ -251,6 +251,28 @@
     })
 )
 
+(defn get-time [ctrl]
+    (try
+    (let [
+        utc-str (-> ctrl
+            (sel1)
+            (dom/value)
+            (js/Date.)
+            (.toISOString)
+        )
+        ]
+        (.log js/console utc-str)
+        utc-str
+    )
+    (catch js/RangeError ex
+        (-> ctrl
+            (name)
+            (js/RangeError.)
+            (throw)
+        )
+    ))
+)
+
 (defn get-keywords []
     (-> (sel1 :#search_bar)
         (dom/value)
@@ -258,10 +280,12 @@
 )
 
 (defn request-search []
-    (show-busy)
     (let [
+        start-time (get-time :#start_time)
+        end-time (get-time :#end_time)
         keywords (get-keywords)
         ]
+        (show-busy)
         (ajax/POST (ajax/uri-with-params "/query/create" {
                 :query keywords 
             }) {
@@ -296,7 +320,28 @@
     )
 )
 
+(defn set-time [ctrl datetime]
+    (let [year (.getFullYear datetime)
+        month (inc (.getMonth datetime))
+        day (.getDate datetime)
+        hour (.getHours datetime)
+        minute (.getMinutes datetime)
+        sec (.getSeconds datetime)
+        ]
+        (dom/set-value! (sel1 ctrl) 
+            (format "%4d-%2d-%2dT%2d:%2d:%2d" year month day hour minute sec)
+        )
+    )
+)
+
 (defn ^:export load []
+    (let [now (Date/now)
+        end-time (js/Date. now)
+        start-time (js/Date. (- now 3600000))
+        ]
+        (set-time :#start_time start-time)
+        (set-time :#end_time end-time)
+    )
     (show-detail-section :table)
 
     (dom/listen! (sel1 :#btn_switcher_list) 

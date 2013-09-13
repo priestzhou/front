@@ -12,7 +12,7 @@
         )
         (println "post-for-queryid")
         (println req)
-        (println (slurp (:body req)))
+        (println :body (slurp (:body req)))
         {:status 202
             :headers {
                 "Access-Control-Allow-Origin" "*"
@@ -166,8 +166,7 @@
             [\"2013-08-09 18:58:16\", \"INFO\", \"org.apache.hadoop.hdfs.server.datanode.BlockPoolSliceScanner\", \"8416612258730348352\", \"Verification succeeded for BP-618800880-127.0.1.1-1340026760932:blk_8416612258730348352_11847065\"],
             [\"2013-08-09 18:58:17\", \"INFO\", \"org.apache.hadoop.hdfs.server.datanode.BlockPoolSliceScanner\", \"8841348180745215716\", \"Verification succeeded for BP-618800880-127.0.1.1-1340026760932:blk_8841348180745215716_10805348\"]
         ]
-    },
-    \"query-time\": \"1376041540441\"
+    }
 }
 "
         }
@@ -183,6 +182,7 @@
             "/css/index.css" "@/resources/css/index.css"
             "/css/jquery-ui.css" "@/resources/css/jquery-ui.css"
             "/css/jquery.loadmask.css" "@/resources/css/jquery.loadmask.css"
+            "/css/jscal2.css" "@/resources/css/jscal2.css"
             "/image/bar.png" "@/resources/image/bar.png"
             "/image/go_btn.png" "@/resources/image/go_btn.png"
             "/image/icons_sprite.png" "@/resources/image/icons_sprite.png"
@@ -199,6 +199,8 @@
             "/js/jquery-ui.js" "@/resources/js/jquery-ui.js"
             "/js/jquery.loadmask.min.js" "@/resources/js/jquery.loadmask.min.js"
             "/js/jquery.pagination.js" "@/resources/js/jquery.pagination.js"
+            "/js/jscal2.js" "@/resources/js/jscal2.js"
+            "/js/cn.js" "@/resources/js/cn.js"
             "/js/log_query.js" "@/resources/js/log_query.js"
         })
         post-for-queryid

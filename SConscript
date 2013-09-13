@@ -103,6 +103,8 @@ mock_server = env.install(env.compileAndJar('lq_mock_server.jar', 'log_query',
         env.File('resources/js/jquery.loadmask.min.js'): '@/resources/js',
         env.File('resources/js/bootstrap.min.js'): '@/resources/js',
         env.File('resources/js/jquery.pagination.js'): '@/resources/js',
+        env.File('resources/js/jscal2.js'): '@/resources/js',
+        env.File('resources/js/cn.js'): '@/resources/js',
 
         env.File('log_query/index.html'): '@/resources/',
 
@@ -110,6 +112,7 @@ mock_server = env.install(env.compileAndJar('lq_mock_server.jar', 'log_query',
         env.File('resources/css/bootstrap.css'): '@/resources/css',
         env.File('resources/css/jquery-ui.css'): '@/resources/css',
         env.File('resources/css/jquery.loadmask.css'): '@/resources/css',
+        env.File('resources/css/jscal2.css'): '@/resources/css',
 
         env.File('resources/image/bar.png'): '@/resources/image',
         env.File('resources/image/go_btn.png'): '@/resources/image',
