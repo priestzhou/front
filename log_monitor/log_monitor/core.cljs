@@ -9,7 +9,7 @@
         [ajax.core :as ajax]
     )
     (:use
-        [utilities.core :only (->js-obj ->cljs-coll enumerate nested-merge)]
+        [utilities.core :only (->js-obj ->cljs-coll enumerate zip nested-merge)]
     )
 )
 
@@ -30,7 +30,6 @@
     }
     :legend false
     :xAxis { 
-        :categories []
         :title {
             :text ""
         }
@@ -109,20 +108,34 @@
 
 (def data (atom {"meta" [] "grouptable" [] "logtable" []}))
 
-(defn extract-scc-xaxis [xaxis]
-    (vec (map #(second (str/split % #" ")) xaxis))
+(defn parse-date [date-str]
+    (let [[year month day hour minute sec] (map int (str/split date-str #"[\s-:]"))
+        utc (.UTC js/Date year (dec month) day hour minute sec)
+        ]
+        utc
+    )
 )
 
 (defn draw-search-count-chart []
     (let [d (get @data "matchchart")
-        config (nested-merge default-config-column {
-            :series [{:name "whatever" :data (get d "search-count")}]
-            :xAxis {
-                :categories (extract-scc-xaxis (get d "time-series"))
-                :title {:text ""}
+        yaxis (get d "search-count")
+        xaxis (get d "time-series")
+        config (nested-merge default-config-column 
+            {
+                :series [
+                    {
+                        :data (vec (for [[datetime value] (zip xaxis yaxis)]
+                            [(parse-date datetime) value]
+                        ))
+                    }
+                ]
+                :xAxis {
+                    :type "datetime"
+                }
             }
-        })
+        )
         ]
+        (.setOptions js/Highcharts (->js-obj {:global {:useUTC false}}))
         (.highcharts (js/jQuery "#VisualChartDiv") (->js-obj config))
         (dom/set-text! (sel1 :#matched_count) 
             (format "%d个匹配事件" (reduce + (get d "search-count")))
@@ -131,10 +144,15 @@
 )
 
 (defn format-gkeys [gkeys]
-    (let [gkeys (get gkeys "gKeys")]
-        (str/join ","
-            (for [[k v] (into (sorted-map) gkeys)]
-                (format "%s=%s" k v)
+    (let [variable (first (for [k (keys gkeys) :when (not= k "gKeys")] k))
+        gkeys (get gkeys "gKeys")
+        ]
+        (format "%s[%s]" 
+            variable
+            (str/join ","
+                (for [[k v] (into (sorted-map) gkeys)]
+                    (format "%s=%s" k v)
+                )
             )
         )
     )
@@ -143,6 +161,7 @@
 (defn extract-group-chart-data [gid data]
     (vec (for [row data]
         (let [events (get row "events")
+            date (parse-date (get row "timestamp"))
             point (for [event events 
                 :when (= (get event "gId") gid)
                 [k v] event
@@ -155,33 +174,25 @@
                 (.log js/console (format "find same gid in one time: %s" (pr-str row)))
             )
             (if (empty? point)
-                0
-                (first point)
+                [date 0]
+                [date (first point)]
             )
         )
     ))
 )
 
 (defn calc-series [gmeta data]
-    {:series
-        (vec (for [[gid ks] (enumerate gmeta)]
+    {
+        :series (vec (for [[gid ks] (enumerate gmeta)]
             {
                 :name (format-gkeys ks) 
                 :data (extract-group-chart-data gid data)
             }
         ))
+        :xAxis {
+            :type "datetime"
+        }
     }
-)
-
-(defn calc-xaxis [data]
-    (vec (map
-        #(-> %
-            (get "timestamp")
-            (str/split " ")
-            (second)
-        )
-        data
-    ))
 )
 
 (defn log-yaxis []
@@ -198,14 +209,13 @@
         config (nested-merge default-config-area
             (calc-series gmeta data)
             {
-                :xAxis {:categories (calc-xaxis data)}
                 :tooltip {
                     :headerFormat ""
                     :formatter (fn []
                         (this-as me
                             (format "%s 总计%d次" 
-                                (.-category (.-point me)) 
-                                (.-y (.-point me))
+                                (.toLocaleString (js/Date. (.-x me)))
+                                (.-y me)
                             )
                         )
                     )
@@ -214,6 +224,7 @@
             (log-yaxis)
         )
         ]
+        (.setOptions js/Highcharts (->js-obj {:global {:useUTC false}}))
         (.highcharts (js/jQuery "#divContentChart") (->js-obj config))
     )
 )
@@ -370,7 +381,6 @@
         ]
         (when-not (empty? da)
             (let [[topics d] (reformat-group-table gmeta da)]
-                (.log js/console (pr-str d))
                 (-> (sel1 (sel1 (sel1 :#divContentTable) :div) :table)
                     (dom/replace! (format-table topics d))
                 )
@@ -546,6 +556,11 @@
 (defn select-time-range [time-range]
     (doto (sel1 :#time_range_picker)
         (dom/set-value! time-range)
+    )
+    (case time-range
+        60 (dom/set-text! (sel1 :#time_range_activator) "1分钟")
+        300 (dom/set-text! (sel1 :#time_range_activator) "5分钟")
+        (.log js/console (format "unknown time range: %d" time-range))
     )
 )
 
