@@ -1,0 +1,167 @@
+#navigator {
+    background: url("../image/bar.png") repeat scroll 0 0 transparent;
+    height: 68px;
+}
+#logo {
+    float: left;
+}
+#tabs {
+    float: left;
+    line-height: 32px;
+    padding: 35px 0 0 0px;
+}
+ul {
+    list-style: none outside none;
+}
+.navItem {
+    display: inline-block;
+    cursor: pointer;
+    vertical-align: bottom;
+    border-radius:3px;
+    margin-bottom: -3px;
+    color: #000000;
+    background-color:#ffffff;
+    padding: 5px 15px 3px;
+}
+.navItem span {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+section {
+    clear: both;
+    border-radius: 3px;
+    border-color: #CCCCCC;
+    border-style: solid;
+    border-width: 1px;
+    margin: 10px 20px;
+}
+
+section#query_zone > div {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+section#query_zone > div > div:first-child > div:first-child, 
+section#query_zone > div > div:first-child > div:nth-child(3) {
+    text-align: right;
+}
+
+textarea#search_bar {
+    line-height: 16px; 
+    height: 16px;
+
+    margin: 0;
+
+    border-color: #2D65A1;
+    border-image: none;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 5px;
+
+    box-shadow: none;
+    font-size: 12px;
+
+    resize: none;
+}
+input#search_btn {
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    border-radius: 5px;
+    min-height: 30px;
+    height: 30px;
+    background: url("../image/go_btn.png") no-repeat scroll center 0 #2D65A1;
+}
+
+#match_section h2 {
+    padding-left: 20px;
+    height: 22px;
+    line-height: 24px;
+    font-size: 13px;
+}
+
+#btn_switcher {
+    clear:both;
+    padding: 0 10px 20px;
+    list-style-type: none;
+    margin: 3px 0 0;
+}
+#btn_switcher > li.Selected {
+    background-color: #999999;
+    box-shadow: 1px 1px 1px 0 #333333 inset;
+}
+#btn_switcher > li {
+    float: left;
+    height: 19px;
+    margin-right: 2px;
+    width: 19px;
+    border-color: #FFFFFF;
+    border-radius: 3px 3px 3px 3px;
+}
+#btn_switcher > li > a {
+    cursor: pointer;
+    display: block;
+    height: 13px;
+    margin: 3px;
+    width: 13px;
+    background-image: url("../image/sprite_button_icons.png");
+    background-repeat: no-repeat;
+}
+#icon_log_list {
+    background-position: -39px -740px;
+}
+#icon_result_table {
+    background-position: -39px -780px;
+}
+
+#details {
+    clear: both;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px 5px 5px 5px;
+    margin: 10px 20px;
+}
+.PageArea {
+    height: 26px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    text-align: right;
+}
+
+#pagination {
+    text-align: right;
+    vertical-align: middle;
+}
+
+#pagination a.prev, #pagination a.next {
+    border: medium none;
+}
+#pagination a {
+    border: 1px solid #C5C4C4;
+    color: #448CCA;
+    text-decoration: none;
+}
+#pagination a, #pagination span {
+    display: inline-block;
+    margin: 0 2px;
+    padding: 2px 8px;
+    vertical-align: middle;
+}
+
+#pagination span.current {
+    background-color: #448CCA;
+    color: #FFFFFF;
+}
+
+.EventsNumOk {
+    background: url("../image/icons_sprite.png") no-repeat scroll 0 -57px transparent;
+    height: 22px;
+    line-height: 24px;
+}
+.EventsNumLoading {
+    background: url("../image/loader.gif") no-repeat;
+    height: 22px;
+    line-height: 24px;
+}
+
